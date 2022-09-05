@@ -1,0 +1,115 @@
+import type {NextPage} from 'next';
+import {useRouter} from 'next/router';
+import {useEffect} from 'react';
+import {Fetcher} from '../../lib/fetcher';
+import {Header} from '../../comps/header/header';
+import {Cats} from '../../comps/cats/cats';
+import {NextPageContext} from 'next';
+import {Category} from '@prisma/client';
+import {prisma} from '../../prisma';
+import frontState from '../../states/front';
+import {Container} from '../../comps/container';
+import {formatPhoneNumber, useHasHydrated} from '../../lib/utils';
+import {Background} from '../../comps/background';
+import {Banner} from '../../comps/banner';
+import {useSnapshot} from 'valtio';
+import {useIsLoggedIn} from '../../states/profile';
+
+
+const OrderFailed: NextPage = (props) => {
+    const {query} = useRouter();
+    const {order_id} = query;
+
+    const {windowWidth} = useSnapshot(frontState);
+    const isLoggedIn = useIsLoggedIn();
+
+    const {bannerA, bannerB, bannerC} = useSnapshot(frontState);
+    const hasHydrated = useHasHydrated();
+
+    useEffect(() => {
+        if (!order_id || typeof order_id !== 'string' || isNaN(parseInt(order_id))) {
+            return;
+        }
+        Fetcher.post('/order/failed', {
+            key: 'order_payment_failed',
+            orderId: parseInt(order_id),
+        }).then(() => {
+            console.log('order payment failed');
+        }).catch((e) => {
+            console.log(e);
+        });
+    }, [query]);
+
+    useEffect(() => {
+        // initialize category
+        // @ts-ignore
+        frontState.categories = props?.categories || [];
+
+    }, []);
+
+
+    if (!isLoggedIn && hasHydrated) {
+        // redirect to home
+        window.location.href = '/';
+    }
+
+    if (!isLoggedIn) {
+        return null;
+    }
+
+    return (
+        <>
+            <Header/>
+            <Container className="container search">
+                <Cats/>
+                <div className={'mt-5 text-center'} style={{
+                    // marginLeft: hasHydrated ? searchContainerMargin : 0,
+                    // marginRight: hasHydrated ? searchContainerMargin : 0,
+                    marginLeft: 'auto',
+                    marginRight: 'auto',
+                    maxWidth: '500px',
+                }}>
+                    <img width={100} src="/sf-guid.png" alt="order failed"/>
+                    <h1 className={'mt-4'}>Sorry, payment failed!</h1>
+                    <p>
+                        Unfortunately, your order # {order_id} failed.
+                    </p>
+                    <p>
+                        Please try again or contact us for assistance.
+                    </p>
+                    <a href="/">
+                        <button className="btn btn-primary text-danger">
+                            <i className="fa fa-home "/> Home
+                        </button>
+                    </a>
+                </div>
+            </Container>
+            <Background withMargin align={'right'} bg={'/static/images/right-bg.jpg'}/>
+            <Background align={'right'} bg={'/static/images/home-right-bg.png'}/>
+
+            {
+                windowWidth > 1200 &&
+                <>
+                    <Banner align={'left'} bannerLarge={bannerA}/>
+                    <Banner align={'right'}
+                            bannerTop={bannerB}
+                            bannerBottom={bannerC}/>
+                </>
+            }
+        </>
+    );
+};
+
+export default OrderFailed;
+
+
+export const getServerSideProps = async (ctx: NextPageContext) => {
+
+    const categories: Category[] = await prisma.category.findMany();
+
+    return {
+        props: {
+            categories,
+        },
+    };
+};

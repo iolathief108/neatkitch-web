@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "Order" ALTER COLUMN "address_line_2" DROP NOT NULL,
+ALTER COLUMN "state" DROP NOT NULL,
+ALTER COLUMN "zip" DROP NOT NULL;

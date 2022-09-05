@@ -1,0 +1,57 @@
+import frontState from '../states/front';
+import {useSnapshot} from 'valtio';
+import React, {useEffect} from 'react';
+import {Footer} from './footer/footer';
+import TawkTo from 'tawkto-react';
+import {tawkConfig} from '../lib/config';
+
+
+interface ContainerProps {
+    className?: string;
+    children: React.ReactNode;
+}
+
+export function Container(props: ContainerProps) {
+
+    const {headerHeight} = useSnapshot(frontState);
+
+    // if not server side
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const tawk = new TawkTo(tawkConfig.propertyId, tawkConfig.tawkId);
+            // tawk.hideWidget()
+        }
+    }, []);
+
+    return (
+        <>
+            <div
+                className={`${props.className || ''}`}
+                style={{
+                    marginTop: headerHeight || undefined,
+                    minHeight: '95vh',
+                    position: 'relative',
+                }}
+            >
+                {props.children}
+
+
+            </div>
+
+            <div className="copywrite" style={{
+                overflow: 'hidden',
+            }}>
+                <div style={{
+                    position: 'absolute',
+                    bottom: '0',
+                    width: '100%',
+                }}>
+                    <Footer/>
+                </div>
+                <div className="container text-center fs-6 invisible pt-3">
+                    <Footer/>
+                </div>
+            </div>
+        </>
+    );
+}

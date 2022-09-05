@@ -1,0 +1,128 @@
+import {proxy, subscribe} from 'valtio';
+import {Category} from '@prisma/client';
+import {getContainerWidth, getSearchContainerMargin, getSearchContentSideSpace, getWindowWidth} from '../lib/utils';
+import pageState from './page';
+import {getBanners} from '../lib/fetcher';
+
+
+interface Interface {
+    categories: Category[];
+    sliderImageUrls: string[];
+    dods: {
+        imageUrl: string;
+        id?: number;
+    }[];
+
+    windowHeight: number;
+    windowWidth: number;
+
+    isBgVisible: boolean;
+    bgWidth: number;
+    searchContainerMargin: number;
+
+    isBannerVisible: boolean;
+    bannerMargin: number;
+    bannerWidth: number;
+
+    isSidebarActive: boolean;
+
+    headerHeight: number;
+
+
+    // banners
+    bannerA?: string;
+    bannerB?: string;
+    bannerC?: string;
+}
+
+const frontState = proxy<Interface>({
+    categories: [],
+    sliderImageUrls: [],
+    dods: [],
+
+    isBgVisible: false,
+    bgWidth: 0,
+
+    searchContainerMargin: 0,
+
+    isBannerVisible: false,
+    bannerMargin: 0,
+    bannerWidth: 0,
+    windowHeight: 0,
+    windowWidth: 0,
+
+    isSidebarActive: false,
+
+    headerHeight: 0,
+});
+
+function initSize() {
+
+    // if server
+    if (typeof window === 'undefined') {
+        return;
+    }
+
+    frontState.windowHeight = window.innerHeight;
+    frontState.windowWidth = window.innerWidth;
+
+    if (getWindowWidth() > 1200) {
+        frontState.bgWidth = (getWindowWidth() - getContainerWidth()) / 2;
+        frontState.isBgVisible = true;
+    } else {
+        frontState.bgWidth = getWindowWidth();
+        frontState.isBgVisible = false;
+    }
+    // initialize banner
+    if (getWindowWidth() > 992) {
+        frontState.searchContainerMargin = getSearchContainerMargin();
+        frontState.isBannerVisible = true;
+
+        if (getSearchContentSideSpace() > 480) {
+            frontState.bannerMargin = getSearchContentSideSpace() / 2 - 100;
+            frontState.bannerWidth = 200;
+        } else if (getSearchContentSideSpace() > 400) {
+            frontState.bannerMargin = getSearchContentSideSpace() / 2 - 80;
+            frontState.bannerWidth = 200;
+        } else if (getSearchContentSideSpace() > 300) {
+            frontState.bannerMargin = 50;
+            frontState.bannerWidth = 200;
+        } else {
+            const bannerWidth = getSearchContentSideSpace() * 2 / 3;
+            frontState.bannerMargin = (getSearchContentSideSpace() - bannerWidth) / 2 - 10;
+            frontState.bannerWidth = bannerWidth;
+        }
+    } else {
+        frontState.isBannerVisible = false;
+        frontState.searchContainerMargin = 0;
+    }
+}
+
+async function initBanner() {
+    const banners = await getBanners();
+    frontState.bannerA = banners?.bannerA;
+    frontState.bannerB = banners?.bannerB;
+    frontState.bannerC = banners?.bannerC;
+}
+
+(async () => {
+
+    initBanner();
+
+    // if server
+    if (typeof window === 'undefined') {
+        return;
+    }
+
+    subscribe(pageState, () =>
+        frontState.searchContainerMargin = getSearchContainerMargin(),
+    );
+
+    initSize();
+    // on window resize
+    window.addEventListener('resize', () => {
+        initSize();
+    });
+})();
+
+export default frontState;
