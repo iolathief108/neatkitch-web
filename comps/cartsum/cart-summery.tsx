@@ -19,7 +19,7 @@ export function CartSummery(props: Props | {}) {
     return (
         <div className={'cart-summery mt-4'}>
             <div className={'title-container'}>
-                <span>Cart Summery</span>
+                <span>Cart Summary</span>
             </div>
             <div className={'content-wrap row'}>
                 <div className={'col-md-5 mb-3 mb-md-0'}>

@@ -45,6 +45,7 @@
     "react-infinite-scroller": "^1.2.6",
     "react-loading": "^2.0.3",
     "react-slick": "^0.29.0",
+    "react-to-print": "^2.14.7",
     "reactjs-popup": "^2.0.5",
     "sass": "^1.54.0",
     "slick-carousel": "^1.8.1",

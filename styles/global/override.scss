@@ -110,10 +110,11 @@
 
 
 // popup
-.popup-content {
-  max-height: 90vh;
+body .popup-content {
+  max-height: 80vh;
   overflow-y: auto;
-  padding: 30px;
+  padding: 0;
+  max-width : 900px;
 }
 
 
@@ -134,4 +135,9 @@ table {
   th:first-child, td:first-child {
     padding-left: 0;
   }
+}
+
+// admin main
+.admin-main {
+  font-family : Roboto, sans-serif;
 }

@@ -15,6 +15,22 @@
     }
   }
 
+  @media (max-width : 575px) {
+    .content-wrap {
+      padding : 0;
+      margin  : 0;
+    }
+    .title-container {
+      margin-right : 10px;
+      margin-left  : 10px;
+    }
+    .search-container {
+        margin-right : 10px;
+        margin-left  : 10px;
+    }
+
+  }
+
   .content-wrap > div {
 
 
@@ -117,7 +133,7 @@
     padding       : 12px 15px 12px 20px;
 
     &::placeholder {
-      opacity: 0.5;
+      opacity : 0.5;
     }
   }
 

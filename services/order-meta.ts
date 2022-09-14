@@ -18,21 +18,25 @@ export const PaymentStatus = {
 export const PaymentStatusKey = 'payment_status';
 
 export const OrderStatus = {
+    // in process
     PENDING: {
         code: 'pending',
         label: 'Pending',
         description: 'Order is pending',
     },
+    // shipped
     PROCESSING: {
         code: 'processing',
         label: 'Processing',
         description: 'Order is processing',
     },
+    // delivered
     COMPLETED: {
         code: 'completed',
         label: 'Completed',
         description: 'Order is completed',
     },
+    // cancelled
     CANCELLED: {
         code: 'cancelled',
         label: 'Cancelled',

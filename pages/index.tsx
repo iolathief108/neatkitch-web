@@ -20,6 +20,7 @@ import {getQuery, useHasHydrated} from '../lib/utils';
 import pageState from '../states/page';
 import {Loader} from '../comps/loader';
 import profileState, {profileActions, useIsLoggedIn} from '../states/profile';
+import {CartSummery} from '../comps/cartsum/cart-summery';
 
 
 type Props = {
@@ -75,7 +76,7 @@ const Home: NextPage<Props> = (props) => {
                          marginRight: hasHydrated ? searchContainerMargin : 0,
                      }}
                 >
-
+                    <CartSummery/>
                     <h2 className={'text-center'}>Products</h2>
                     <InfiniteScroll
                         pageStart={0}

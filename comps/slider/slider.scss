@@ -75,7 +75,17 @@
   @media (max-width : 576px) {
     .slick-slider img {
       max-height : 250px;
-      height:  250px!important;
+      height:  180px!important;
+    }
+  }
+}
+
+
+.home-slider {
+  .slick-track {
+    min-height:  420px;
+    @media (max-width : 775px) {
+      min-height:  150px;
     }
   }
 }

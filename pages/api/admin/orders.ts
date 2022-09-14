@@ -113,14 +113,20 @@ function verifySorting(query: NextApiRequest['query']): {filter: string[], sort:
     if (Array.isArray(filter)) {
         filter = filter[0];
     }
-    let arrFilter: string[];
+    let arrFilter: string[] = [];
     if (filter) {
         filter = filter.toLowerCase();
         if (filter !== 'pending' && filter !== 'processing' && filter !== 'completed' && filter !== 'cancelled') {
             // filter = 'pending';
             arrFilter = [];
         } else if (filter === 'pending' || filter === 'processing') {
-            arrFilter = ['pending', 'processing'];
+            // arrFilter = ['pending', 'processing'];
+            if (filter === 'pending') {
+                arrFilter = ['pending'];
+            }
+            if (filter === 'processing') {
+                arrFilter = ['processing'];
+            }
         } else {
             arrFilter = [filter];
         }

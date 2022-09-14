@@ -48,7 +48,7 @@ export function Container(props: ContainerProps) {
                 }}>
                     <Footer/>
                 </div>
-                <div className="container text-center fs-6 invisible pt-3">
+                <div className="container text-center fs-6 invisible pt-4">
                     <Footer/>
                 </div>
             </div>

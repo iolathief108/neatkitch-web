@@ -176,11 +176,15 @@ export const getAllOrderStatus = () => {
             value: 'all',
         },
         {
-            label: 'Pending',
+            label: 'Processing',
             value: 'pending',
         },
         {
-            label: 'Completed',
+            label: 'Shipped',
+            value: 'processing',
+        },
+        {
+            label: 'Delivered',
             value: 'completed',
         },
         {
@@ -202,9 +206,9 @@ export function getOrderTotal(order: ResOrder) {
 export function getOrderStatus(order: ResOrder) {
     switch (order.orderStatus) {
         case 'pending':
-            return 'Pending';
-        case 'processing':
             return 'Processing';
+        case 'processing':
+            return 'Shipped';
         case 'completed':
             return 'Delivered';
         case 'cancelled':
@@ -222,12 +226,12 @@ export function nextStatusText(order: ResOrder) {
     switch (order.orderStatus) {
         case 'pending':
             return {
-                label: 'Process',
+                label: 'To Ship',
                 value: 'process',
             };
         case 'processing':
             return {
-                label: 'Complete',
+                label: 'To Deliver',
                 value: 'complete',
             };
         default:

@@ -267,3 +267,22 @@
     }
   }
 }
+
+// cart badge
+.main-header-outer .right a.cart {
+  position : relative;
+  margin-left: 10px;
+
+  .badge {
+    position: absolute;
+    font-weight: bold;
+    top: -7px;
+    right: -12px;
+    font-size: 0.7rem;
+    padding: 1px 6px;
+    line-height: 17px;
+    border-radius: 50%;
+    background-color: $theme-color-blue;
+    color: #fff;
+  }
+}

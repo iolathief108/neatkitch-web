@@ -112,18 +112,6 @@ h6 {
 @import "admin-order";
 @import "override";
 @import "order";
+@import "admin-order-popup";
 
 
-// order popup admin
-.or-det-cont {
-
-  font-size   : 1.08rem;
-  font-weight : 600;
-
-  .order-item {
-  }
-}
-
-.admin-main {
-  font-family: Roboto, sans-serif;
-}

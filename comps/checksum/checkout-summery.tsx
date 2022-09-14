@@ -9,7 +9,7 @@ export function CheckoutSummery() {
 
     const {orderTotal} = useSnapshot(cartCalc);
     const hasHydrated = useHasHydrated();
-    const [shippingCharge, setShippingCharge] = useState(0);
+    const [, setShippingCharge] = useState(0);
 
     useEffect(() => {
         getDeliveryFee().then(setShippingCharge);
@@ -19,7 +19,7 @@ export function CheckoutSummery() {
     return (
         <div className={'checksum'}>
             <div className={'title-container'}>
-                <span>Cart Summery</span>
+                <span>Checkout Summary</span>
             </div>
             <div className={'content-wrap row'}>
                 <div className={'col-md-5'}>

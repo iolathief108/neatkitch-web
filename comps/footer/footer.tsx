@@ -36,19 +36,9 @@ export function Footer() {
     return (
         <>
             <div className={'footer'}>
-                <div className="container fs-6 pt-3 pb-3">
-                    <div className={'row px-6'}>
-
-                        <div className={'col-12 col-md-2'}>
-                            <div className={'logo'}>
-                                <Link href="/">
-                                    <img
-                                        src="/logo-white.png"
-                                        alt="logo"/>
-                                </Link>
-                            </div>
-                        </div>
-                        <div className={'ms-auto text-end col-12 col-md-2'}>
+                <div className="container fs-6 pt-1 pb-2">
+                    <div className={'row px-md-6'}>
+                        <div className={'col-6 col-md-2'}>
                             <SingleCol title={'Links'} links={[
                                 {
                                     name: 'Find All',
@@ -65,10 +55,10 @@ export function Footer() {
                                 {
                                     name: 'Privacy Policy',
                                     href: '/privacy',
-                                }
+                                },
                             ]}/>
                         </div>
-                        <div className={'col-12 col-md-2 text-end'}>
+                        <div className={'col-6 col-md-2'}>
                             <SingleCol title={'Account'} links={[
                                 {
                                     name: 'Orders',
@@ -88,12 +78,60 @@ export function Footer() {
                                 },
                             ]}/>
                         </div>
+                        <div className={'col-12 col-md-4 col-lg-3 ms-auto ps-xl-6'}>
+                            <div className={'logo'}>
+                                <Link href="/">
+                                    <img
+                                        src="/logo-white.png"
+                                        alt="logo"/>
+                                </Link>
+                            </div>
+                            <div className={'social mt-3'}>
+                                {/*<span className={'me-2'}>Follow us: </span>*/}
+                                <a className={'me-4'} href={'https://www.facebook.com/'} target={'_blank'}>
+                                    <i className="fab fa-facebook-f"/>
+                                </a>
+                                <a className={'me-4'} href={'https://www.instagram.com/'} target={'_blank'}>
+                                    <i className="fab fa-instagram"/>
+                                </a>
+                                <a className={'me-3'} href={'https://www.twitter.com/'} target={'_blank'}>
+                                    <i className="fab fa-twitter"/>
+                                </a>
+                            </div>
+
+                            <div className={'payment mt-2'}>
+                                <span className={'pb-1 d-inline-block'}>Payment methods: </span>
+                                <img
+                                    src="/static/payment1.png"
+                                    alt="logo"/>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div className={'copy-bottom mt-3 '}>
-                <div className={'container'}>
-                <div className={'row px-6'}>
+            <FooterBottom/>
+        </>
+    );
+}
+
+function FooterBottom() {
+    return (
+        <div className={'copy-bottom mt-3 '}>
+            <div className={'container'}>
+
+                <div className={'text-center mb-0 mt-2 py-2'}>
+                    <small>
+                        {/*Neatkitch 2022, All Rights Reserved*/}
+                        <span>Neatkitch
+                            {/*&copy; */}
+                            <span>&nbsp;</span>
+                            {new Date().getFullYear()},</span>
+                        <span>&nbsp;</span>
+                        <span>All Rights Reserved</span>
+                    </small>
+                </div>
+
+                <div className={'row px-6 d-none'}>
                     <div className={'col-12 col-md-4 mb-0 mt-2 py-3'}>
                         <small>
                             <span>&copy; {new Date().getFullYear()}</span>
@@ -117,11 +155,9 @@ export function Footer() {
                     </div>
                 </div>
             </div>
-            </div>
-        </>
+        </div>
     );
 }
-
 
 // export function Footer() {
 //     return (

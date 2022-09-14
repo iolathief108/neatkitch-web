@@ -8,6 +8,7 @@ import React, {useEffect, useRef} from 'react';
 import frontState from '../../states/front';
 import {useRouter} from 'next/router';
 import Head from 'next/head';
+import {cartState} from '../../states/cart';
 
 
 export function Header() {
@@ -21,16 +22,9 @@ function RealHeader() {
     const hasHydrated = useHasHydrated();
     const {id, firstName} = useSnapshot(profileState);
     const {headerHeight} = useSnapshot(frontState);
+    const {cart} = useSnapshot(cartState);
     const ref = useRef<HTMLDivElement>(null);
     const router = useRouter();
-
-    // calculate header height
-    const getHeaderHeight = () => {
-        if (!ref.current) {
-            return headerHeightBefore;
-        }
-        return ref.current.getBoundingClientRect().height;
-    };
 
     useEffect(() => {
         frontState.headerHeight = getHeaderHeight();
@@ -50,6 +44,27 @@ function RealHeader() {
 
     }, []);
 
+    // calculate header height
+    const getHeaderHeight = () => {
+        if (!ref.current) {
+            return headerHeightBefore;
+        }
+        return ref.current.getBoundingClientRect().height;
+    };
+
+    const getCartCount = () => {
+        const amount = cart.reduce((acc, item) => {
+            return acc + item.v2Qty + item.v1Qty;
+        }, 0);
+        if (amount > 99) {
+            return '99+';
+        }
+        if (amount === 0) {
+            return '';
+        }
+        return amount;
+    };
+
     return (
         <div ref={ref} className={'main-header-outer '
         + (headerHeight ? 'static' : '')
@@ -59,6 +74,7 @@ function RealHeader() {
                     NeatKitch - We have everything you need to make your kitchen perfect!
                 </title>
             </Head>
+            <div className={'bg-white pt-2'}/>
             <div className={'containerx'}>
                 <div className={'left'}>
                     <div className={'logo'}>
@@ -93,9 +109,14 @@ function RealHeader() {
                     }
                     <Link href="/cart">
                         <a className={
-                            router.pathname === '/cart' ? 'active' : ''
+                            ( router.pathname === '/cart' ? 'active' : '' ) + ' cart'
                         }>
                             Cart
+                            {
+                                getCartCount() ? (
+                                    <span className={'badge'}>{getCartCount()}</span>
+                                ) : null
+                            }
                         </a>
                     </Link>
                     <Link href="/contact">
@@ -109,7 +130,6 @@ function RealHeader() {
                         <a className={
                             router.pathname === '/about' ? 'active' : ''
                         }>
-
                             About
                         </a>
                     </Link>

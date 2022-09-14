@@ -7,7 +7,7 @@ import adminOrders, {
     nextStatusText,
 } from '../../states/admin-orders';
 import {useSnapshot} from 'valtio';
-import {useEffect, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import moment from 'moment';
 import {OrderItem} from '@prisma/client';
 import {getImageUrl} from '../../lib/config';
@@ -16,6 +16,7 @@ import Popup from 'reactjs-popup';
 import {ResOrder} from '../../lib/fetcher';
 import {OrderDisplayItem, TheOrder} from '../../states/orders';
 import {formatPhoneNumber} from '../../lib/utils';
+import ReactToPrint from 'react-to-print';
 
 
 const Orders: NextPage = () => {
@@ -97,6 +98,7 @@ function Order({orderId}) {
     const {orders} = useSnapshot(adminOrders);
     const [order, setOrder] = useState<ResOrder>();
     const [actionOpen, setActionOpen] = useState(false);
+    const orderDetailRef = useRef(null);
 
     useEffect(() => {
         // @ts-ignore
@@ -115,13 +117,22 @@ function Order({orderId}) {
                 </div>
                 <div className={'name'}>
                     <Popup
-                        // defaultOpen={orderId === 17}
+                        className={'order-popup'}
+                        // defaultOpen={orderId === 30}
                         trigger={
-                        <a className={'name-a'}>
-                            {order.firstName + ' ' + order.lastName}
-                        </a>
-                    } modal>
-                        <OrderDetail order={new TheOrder(order)}/>
+                            <a className={'name-a'}>
+                                {order.firstName + ' ' + order.lastName}
+                            </a>
+                        } modal>
+                        <div>
+                            <div ref={orderDetailRef}>
+                                <OrderDetail order={new TheOrder(order)}/>
+                            </div>
+                            <ReactToPrint
+                                trigger={() => <a className={'ps-3 pb-2 d-inline-block fw-bold'}>PRINT OUT</a>}
+                                content={() => orderDetailRef.current}
+                            />
+                        </div>
                     </Popup>
                 </div>
                 <div className={'date'}>
@@ -164,6 +175,7 @@ function Order({orderId}) {
                                     </button>
                                 )
                             }
+
                             <div onClick={() => {
                                 setActionOpen(false);
                             }} className={'alpha'}/>
@@ -171,7 +183,7 @@ function Order({orderId}) {
                     </button>
                 </div>
             </div>
-            <ProductList items={order.items}/>
+            {/*<ProductList items={order.items}/>*/}
         </div>
     );
 }
@@ -308,9 +320,9 @@ function OrderDetail({order}: {order: TheOrder}) {
 
         return (
             <div className={'summary'}>
-                <h3>Order # {order.id}</h3>
+                <h4>Summary</h4>
                 {/*<span className={'d-block'}>Order ID: {order.id}</span>*/}
-                <span className={'opacity-50'}>
+                <span className={'order-time opacity-50'}>
                     Placed on {moment(order.order.createdAt).format('MMM DD, YYYY hh:mm a')}
                 </span>
 
@@ -323,7 +335,7 @@ function OrderDetail({order}: {order: TheOrder}) {
                         <span>Shipping</span>
                         <span>SGD {order.order.deliveryFee}</span>
                     </div>
-                    <div className={'border-bottom mb-2'}/>
+                    <div className={'border-line mb-2'}/>
                     <div className={'d-flex justify-content-between'}>
                         <span>Total</span>
                         <span className={'fw-bolder'}>SGD {order.total}</span>
@@ -336,7 +348,7 @@ function OrderDetail({order}: {order: TheOrder}) {
     const Address = () => {
         return (
             <div className={'address'}>
-                <h3>Address</h3>
+                <h4>Address</h4>
                 <p>{order.name}</p>
                 <p>
                     {order.address.addrLine1}{order.address.addrLine2 && ','} {order.address.addrLine2}<br/>
@@ -350,7 +362,7 @@ function OrderDetail({order}: {order: TheOrder}) {
     const Items = () => {
         return (
             <div className={'value'}>
-                <h3>Items</h3>
+                <h4>Items</h4>
                 {
                     order.items.map((item, index) => (
                         <TheOrderItem key={`${index}-${item.productName}-${item.varName}`} item={item}/>
@@ -361,19 +373,19 @@ function OrderDetail({order}: {order: TheOrder}) {
     };
 
     return (
-        <div className={'container or-det-cont px-4 pt-4'}>
-            <h2> Order Detail </h2>
+        <div className={'container or-det-cont px-4 pt-4 pb-3'}>
+            <h2>Order # {order.id}</h2>
 
             <div className={'row '}>
-                <div className={'col-6 bg-dark bg-opacity-10 p-3 rounded'}>
+                <div className={'frame col-6 p-3'}>
                     <Summary/>
                 </div>
-                <div className={'col-5 offset-1 bg-dark bg-opacity-10 p-3 rounded'}>
+                <div className={'frame frame-2 flex-grow-1 p-3'}>
                     <Address/>
                 </div>
             </div>
 
-            <div className={'row mt-4 bg-dark bg-opacity-10 p-2 py-3 mb-2 rounded'}>
+            <div className={'frame frame-3 row pt-3 mb-2'}>
                 <Items/>
             </div>
         </div>
@@ -383,7 +395,7 @@ function OrderDetail({order}: {order: TheOrder}) {
 
 const TheOrderItem = ({item}: {item: OrderDisplayItem}) => {
     return (
-        <div className="order-item row mb-3">
+        <div className="order-item row py-2">
             <div className={'col-2'}>
                 {
                     item.imageId &&
@@ -399,7 +411,13 @@ const TheOrderItem = ({item}: {item: OrderDisplayItem}) => {
                 <span className={'var-name opacity-50'}>{item.varName}</span>
             </div>
             <div className="col-3">
-                <p>SGD {item.varPrice}<br/> <span className={'opacity-50'}>Qty:</span> {item.varQty}</p>
+                <p>SGD {item.varPrice}
+                    <br/> <span className={'opacity-50'}>Qty:</span> {item.varQty}</p>
+            </div>
+            <div className="col-1">
+                <input style={{
+                    transform: 'scale(1.3)',
+                }} type={'checkbox'}/>
             </div>
             <div className="col-auto fw-bold ms-auto text-end">
                 {/*<p>SGD {item.varPrice}</p>*/}

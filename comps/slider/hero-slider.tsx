@@ -61,6 +61,10 @@ export function Carousel(props: CarouselProps) {
 
 export function HomeSlider() {
     const {sliderImageUrls} = useSnapshot(frontState);
+    if (sliderImageUrls.length === 0) {
+        return null;
+    }
+
     return (
         <div className={'home-slider'}>
             <Carousel urls={sliderImageUrls}/>
