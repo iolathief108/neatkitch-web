@@ -8,23 +8,12 @@ import {useHasHydrated} from '../lib/utils';
 import {Background} from '../comps/background';
 import {Banner} from '../comps/banner';
 import Head from 'next/head';
-import {NextPageContext} from 'next';
-import {Category} from '@prisma/client';
-import {prisma} from '../prisma';
-import {useEffect} from 'react';
 
 
-const About: NextPage = (props) => {
+const About: NextPage = () => {
     const {bannerA, bannerB, bannerC} = useSnapshot(frontState);
     const hasHydrated = useHasHydrated();
     const {searchContainerMargin, windowWidth} = useSnapshot(frontState);
-
-    useEffect(() => {
-        // initialize category
-        // @ts-ignore
-        frontState.categories = props?.categories || [];
-
-    }, []);
 
     return (
         <>
@@ -75,14 +64,3 @@ const About: NextPage = (props) => {
 };
 
 export default About;
-
-export const getServerSideProps = async (ctx: NextPageContext) => {
-
-    const categories: Category[] = await prisma.category.findMany();
-
-    return {
-        props: {
-            categories,
-        },
-    };
-};

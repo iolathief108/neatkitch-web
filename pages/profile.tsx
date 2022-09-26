@@ -47,7 +47,7 @@ const state = proxy<LoginState>({
 });
 
 
-const Profile: NextPage<Props> = (props) => {
+const Profile: NextPage<Props> = () => {
 
     const {firstName, lastName, phone, otp, otpSent, profileUpdated, uiLoading} = useSnapshot(state);
     const [editPhone, setEditPhone] = useState(false);
@@ -74,8 +74,12 @@ const Profile: NextPage<Props> = (props) => {
 
     useEffect(() => {
         // initialize category
-        frontState.categories = props?.categories || [];
 
+        profileActions.refresh().then(() => {
+            state.uiLoading = false;
+        }).catch(() => {
+            state.uiLoading = false;
+        });
     }, []);
 
     const onProfileUpdate = (e: any) => {
@@ -103,7 +107,7 @@ const Profile: NextPage<Props> = (props) => {
         e.preventDefault();
 
         if (phone.length === 0 || phone === profileState.phone) {
-           setEditPhone(false)
+            setEditPhone(false);
             return;
         }
 
@@ -267,13 +271,3 @@ const Profile: NextPage<Props> = (props) => {
 
 export default Profile;
 
-export const getServerSideProps = async (ctx: NextPageContext) => {
-
-    const categories: Category[] = await prisma.category.findMany();
-
-    return {
-        props: {
-            categories,
-        },
-    };
-};

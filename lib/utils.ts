@@ -6,6 +6,11 @@ import {parsePhoneNumber} from 'libphonenumber-js';
 
 export function getQuery(param?: {cat?: string, key?: string, pin?: string}) {
 
+    if (param?.key) {
+        // url decode
+        param.key = decodeURIComponent(param.key);
+    }
+
     // const state = searchState;
     const cat = param && param.cat ? param.cat : undefined;
     const key = param && param.key ? param.key : undefined;

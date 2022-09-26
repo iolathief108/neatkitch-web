@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react';
 import Link from 'next/link';
-import {getUrl} from '../../lib/utils';
+import {getQuery, getUrl} from '../../lib/utils';
 import {useRouter} from 'next/router';
 
 
@@ -11,7 +11,8 @@ interface Props {
 const SearchBox = (props: Props) => {
     const router = useRouter();
     const {cat, key} = router.query;
-    const [searchText, setSearchText] = useState((Array.isArray(key) ? key[0] : key) || '');
+    // const [searchText, setSearchText] = useState((Array.isArray(key) ? key[0] : key) || '');
+    const [searchText, setSearchText] = useState(getQuery(router.query)?.keywords || '');
 
     useEffect(() => {
         setSearchText(Array.isArray(key) ? key[0] : key || '');

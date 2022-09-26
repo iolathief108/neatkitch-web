@@ -3,6 +3,7 @@ import {getImageUrl} from '../../lib/config';
 import {useState} from 'react';
 import {cartActions} from '../../states/cart';
 import {numberToMoney} from '../../lib/utils';
+import Image from 'next/image'
 
 
 interface Props {
@@ -69,7 +70,8 @@ export function ProductCard({product}: Props) {
             <div className={'inner row'}>
                 <div className={'image order-1 col-6 col-sm-3 pe-0'}>
                     <div className={'image-container position-relative'}>
-                        <img src={getImageUrl(product.imageId)} alt=""/>
+                        <Image src={getImageUrl(product.imageId)} alt={product.name} height={225} width={300} />
+                        {/*<img src={getImageUrl(product.imageId)} alt=""/>*/}
                         <h2 className={'name'}>{product.name}</h2>
                     </div>
                 </div>

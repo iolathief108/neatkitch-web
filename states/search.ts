@@ -13,6 +13,7 @@ interface Interface {
         categorySlug?: string,
         pinId?: number,
     },
+    pageLoading: boolean,
     totalPage: number,
     currentPage: number,
     relatedProducts?: Product[],
@@ -22,6 +23,7 @@ export const searchState = proxy<Interface>({
     products: [],
     search: {},
     totalPage: 0,
+    pageLoading: false,
     currentPage: 0,
 });
 
@@ -76,13 +78,18 @@ export const searchActions = {
             // exclude pinned product from the result
             const pinId = searchState.search.pinId;
             if (pinId) {
-                const pinProduct = await getProduct(pinId);
-                if (pinProduct) {
-                    const pinIndex = products.findIndex(product => product.id === pinProduct.id);
-                    if (pinIndex > -1) {
-                        products.splice(pinIndex, 1);
-                    }
+                const pinIndex = products.findIndex(product => product.id === pinId);
+                if (pinIndex > -1) {
+                    products.splice(pinIndex, 1);
                 }
+
+                // const pinProduct = await getProduct(pinId);
+                // if (pinProduct) {
+                //     const pinIndex = products.findIndex(product => product.id === pinProduct.id);
+                //     if (pinIndex > -1) {
+                //         products.splice(pinIndex, 1);
+                //     }
+                // }
             }
 
             searchState.products = [...searchState.products, ...products];
@@ -92,11 +99,13 @@ export const searchActions = {
             console.log(error);
             setTimeout(() => {
                 searchActions.extend();
-            })
+            });
         }
     },
     search: async ({keywords, categorySlug, pinId}: {keywords?: string, categorySlug?: string, pinId?: number}) => {
         searchState.currentPage = 1;
+        searchState.pageLoading = true;
+        searchState.products = [];
 
         // experimental
         searchState.relatedProducts = undefined;
@@ -115,41 +124,50 @@ export const searchActions = {
             }
         }
 
+        searchState.pageLoading = false;
         if (!products.error) {
             searchState.search = {
                 keywords: keywords || undefined,
                 categorySlug: categorySlug || undefined,
                 pinId: pinId || undefined,
             };
-            searchState.products = products.products;
-            searchState.totalPage = products.totalPage;
 
             // experimental
-            if (keywords) {
-                const firstProduct = products.products[0];
-                if (firstProduct) {
-                    const categoryId = firstProduct.categoryId;
-                    const categorySlug = frontState.categories.find(c => c.id === categoryId)?.slug;
-
-                    const relatedProducts = await getProducts({
-                        categorySlug,
-                        page: 1,
-                        take: 10,
-                    });
-
-                    // remove first product
-                    relatedProducts.products = relatedProducts.products.filter(p => p.id !== firstProduct.id);
-
-                    if (!relatedProducts.error) {
-                        searchState.relatedProducts = relatedProducts.products;
-                    }
-                }
+            const pinIndex = products?.products.findIndex(product => product.id === pinId);
+            if (pinIndex > -1) {
+                products?.products.splice(pinIndex, 1);
             }
+
+            searchState.products = products.products;
+            searchState.totalPage = products.totalPage;
 
 
         } else {
             searchState.products = [];
             searchState.totalPage = 1;
+        }
+
+
+        // experimental
+        if (!products.error && keywords) {
+            const firstProduct = products.products[0];
+            if (firstProduct) {
+                const categoryId = firstProduct.categoryId;
+                const categorySlug = frontState.categories.find(c => c.id === categoryId)?.slug;
+
+                const relatedProducts = await getProducts({
+                    categorySlug,
+                    page: 1,
+                    take: 10,
+                });
+
+                // remove first product
+                relatedProducts.products = relatedProducts.products.filter(p => p.id !== firstProduct.id);
+
+                if (!relatedProducts.error) {
+                    searchState.relatedProducts = relatedProducts.products;
+                }
+            }
         }
     },
     clear: async () => {

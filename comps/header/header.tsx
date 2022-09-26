@@ -53,7 +53,7 @@ function RealHeader() {
     };
 
     const getCartCount = () => {
-        const amount = cart.reduce((acc, item) => {
+        const amount = ( cart || []).reduce((acc, item) => {
             return acc + item.v2Qty + item.v1Qty;
         }, 0);
         if (amount > 99) {
@@ -113,7 +113,7 @@ function RealHeader() {
                         }>
                             Cart
                             {
-                                getCartCount() ? (
+                                hasHydrated && getCartCount() ? (
                                     <span className={'badge'}>{getCartCount()}</span>
                                 ) : null
                             }

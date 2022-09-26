@@ -22,10 +22,10 @@ import Head from 'next/head';
 type Props = {
     categories: Category[];
 }
-const Search: NextPage<Props> = (props) => {
+const Search: NextPage<Props> = () => {
 
-    const {products, totalPage, currentPage, relatedProducts} = useSnapshot(searchState);
-    const {searchContainerMargin} = useSnapshot(frontState);
+    const {products, totalPage, currentPage, relatedProducts, pageLoading} = useSnapshot(searchState);
+    const {searchContainerMargin, mainBannerLoaded, noDodLoaded} = useSnapshot(frontState);
     const {bannerA, bannerB, bannerC} = useSnapshot(frontState);
     const router = useRouter();
     const {cat, key} = router.query as {cat: string, key: string};
@@ -38,7 +38,7 @@ const Search: NextPage<Props> = (props) => {
 
     useEffect(() => {
         // initialize category
-        frontState.categories = props?.categories || [];
+        // frontState.categories = props?.categories || [];
 
         return () => {
             searchActions.clear();
@@ -54,7 +54,7 @@ const Search: NextPage<Props> = (props) => {
 
             return `${title} - ${key}`;
         }
-        if  (cat) {
+        if (cat) {
             // convert cat to titlecase
             return cat.charAt(0).toUpperCase() + cat.slice(1);
         }
@@ -62,7 +62,7 @@ const Search: NextPage<Props> = (props) => {
             return key;
         }
         return 'Search';
-    }
+    };
 
     return (
         <>
@@ -80,20 +80,42 @@ const Search: NextPage<Props> = (props) => {
                     <Cats/>
                     <CartSummery/>
                     <div className={'mt-4'}>
-                        <InfiniteScroll
-                            pageStart={0}
-                            loadMore={() => {
-                                searchActions.extend();
-                            }}
-                            hasMore={currentPage < totalPage}
-                            loader={<Loader key={0} color={'#B60C0C'}/>}
-                        >
-                            {
-                                products.map((product, index) => (
-                                    <ProductCard key={product.id} product={product}/>
-                                ))
-                            }
-                        </InfiniteScroll>
+                        {
+                            !pageLoading && <InfiniteScroll
+                                pageStart={0}
+                                loadMore={() => {
+                                    searchActions.extend();
+                                }}
+
+                                hasMore={currentPage < totalPage}
+                                loader={<Loader key={0} color={'#B60C0C'}/>}
+                            >
+                                {
+                                    products.map((product, index) => (
+                                        <ProductCard key={product.id} product={product}/>
+                                    ))
+                                }
+                            </InfiniteScroll>
+                        }
+                        {
+                            products.length === 0 && !pageLoading &&
+                            <div className={'text-center'}>
+                                <img style={{
+                                    width: '100%',
+                                    maxWidth: '200px',
+                                }} src={'/static/cart/no-products.png'} className={'empty'}/>
+                                <h2>No Products Found</h2>
+                                <p style={{
+                                    maxWidth: '500px',
+                                    margin: 'auto',
+                                }}>
+                                    Your search did not match any products. Please try again with different keywords.
+                                </p>
+                            </div>
+                        }
+                        {
+                            pageLoading && <Loader color={'#B60C0C'}/>
+                        }
                         {
                             relatedProducts && relatedProducts.length > 0 && (
                                 <>
@@ -120,13 +142,13 @@ const Search: NextPage<Props> = (props) => {
 
 export default Search;
 
-export const getServerSideProps = async () => {
-
-    const categories: Category[] = await prisma.category.findMany();
-
-    return {
-        props: {
-            categories,
-        },
-    };
-};
+// export const getServerSideProps = async () => {
+//
+//     const categories: Category[] = await prisma.category.findMany();
+//
+//     return {
+//         props: {
+//             categories,
+//         },
+//     };
+// };

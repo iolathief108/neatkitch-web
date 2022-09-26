@@ -28,6 +28,8 @@ interface Interface {
 
     headerHeight: number;
 
+    mainBannerLoaded: boolean;
+    noDodLoaded: number;
 
     // banners
     bannerA?: string;
@@ -52,6 +54,9 @@ const frontState = proxy<Interface>({
     windowWidth: 0,
 
     isSidebarActive: false,
+
+    mainBannerLoaded: false,
+    noDodLoaded: 0,
 
     headerHeight: 0,
 });
@@ -113,6 +118,24 @@ async function initBanner() {
     if (typeof window === 'undefined') {
         return;
     }
+
+    // if current page is a sub page
+    if (window.location.pathname.length > 1) {
+        // init banners for not home pages
+        frontState.mainBannerLoaded = true;
+        frontState.noDodLoaded = 4;
+    } else {
+        // init in 5 seconds
+        setTimeout(() => {
+            if (!frontState.noDodLoaded) {
+                frontState.mainBannerLoaded = true;
+                frontState.noDodLoaded = 4;
+            }
+        }, 5000);
+    }
+
+
+
 
     subscribe(pageState, () =>
         frontState.searchContainerMargin = getSearchContainerMargin(),

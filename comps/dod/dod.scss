@@ -2,7 +2,7 @@
 
 .home-dod {
   background-color : $background-light-color-primary;
-  border-bottom: $background-light-color-secondary solid 1px;
+  border-bottom    : $background-light-color-secondary solid 1px;
 
   //.content {
   //  display: flex;
@@ -10,8 +10,9 @@
   //}
 
   .image-wrapper {
-    overflow: hidden;
-    img {
+    overflow : hidden;
+
+    > img, > span {
       //width: calc(25% - 20px);
       width        : 100%;
       aspect-ratio : 4/3;

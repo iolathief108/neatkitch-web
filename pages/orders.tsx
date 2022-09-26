@@ -1,6 +1,5 @@
-import {NextPage, NextPageContext} from 'next';
+import {NextPage} from 'next';
 import {Category} from '@prisma/client';
-import {prisma} from '../prisma';
 import {Header} from '../comps/header/header';
 import {Container} from '../comps/container';
 import {Cats} from '../comps/cats/cats';
@@ -14,7 +13,6 @@ import {useEffect, useState} from 'react';
 import InfiniteScroll from 'react-infinite-scroller';
 import {ResOrder} from '../lib/fetcher';
 import {getImageUrl} from '../lib/config';
-import ReactLoading from 'react-loading';
 import {Loader} from '../comps/loader';
 import Head from 'next/head';
 
@@ -23,13 +21,12 @@ type Props = {
     categories: Category[];
 }
 
-const Orders: NextPage<Props> = (props) => {
+const Orders: NextPage<Props> = () => {
     const {bannerA, bannerB, bannerC} = useSnapshot(frontState);
     const hasHydrated = useHasHydrated();
     const {searchContainerMargin, windowWidth} = useSnapshot(frontState);
 
     useEffect(() => {
-        frontState.categories = props?.categories || [];
 
     }, []);
 
@@ -69,17 +66,6 @@ const Orders: NextPage<Props> = (props) => {
 };
 
 export default Orders;
-
-export const getServerSideProps = async (ctx: NextPageContext) => {
-
-    const categories: Category[] = await prisma.category.findMany();
-
-    return {
-        props: {
-            categories,
-        },
-    };
-};
 
 const OrderTable = () => {
     const {orders, end} = useSnapshot(userOrders);

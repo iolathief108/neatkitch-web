@@ -38,6 +38,10 @@ const nextConfig = {
                 source: '/api/login/otp',
                 destination: '/api/user/otp',
             },
+            {
+                source: '/test_payment_2',
+                destination: '/test_payment',
+            }
         ];
     },
 };

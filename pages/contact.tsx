@@ -8,22 +8,13 @@ import {useSnapshot} from 'valtio';
 import frontState from '../states/front';
 import {useHasHydrated} from '../lib/utils';
 import Head from 'next/head';
-import {NextPageContext} from 'next';
-import {Category} from '@prisma/client';
-import {prisma} from '../prisma';
-import {useEffect} from 'react';
 
 
-const Contact: NextPage = (props) => {
+const Contact: NextPage = () => {
     const {bannerA, bannerB, bannerC} = useSnapshot(frontState);
     const hasHydrated = useHasHydrated();
     const {searchContainerMargin, windowWidth} = useSnapshot(frontState);
-    useEffect(() => {
-        // initialize category
-        // @ts-ignore
-        frontState.categories = props?.categories || [];
 
-    }, []);
     return (
         <>
             <Header/>
@@ -76,13 +67,3 @@ const Contact: NextPage = (props) => {
 };
 
 export default Contact;
-export const getServerSideProps = async (ctx: NextPageContext) => {
-
-    const categories: Category[] = await prisma.category.findMany();
-
-    return {
-        props: {
-            categories,
-        },
-    };
-};

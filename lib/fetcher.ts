@@ -5,7 +5,7 @@ import {useEffect, useState} from 'react';
 
 
 export const Fetcher = axios.create({
-    baseURL:  isDevelopment ? `http://localhost:${devPort}${apiBase}` : apiBase,
+    baseURL: isDevelopment ? `http://localhost:${devPort}${apiBase}` : apiBase,
     timeout: 80000,
 
 });
@@ -147,9 +147,153 @@ export const getBanners = async (): Promise<{bannerA?: string; bannerB?: string;
     }
 };
 
+type catType = {
+    id: number,
+    name: string,
+    slug: string,
+    imageId: number,
+}
+var global = {}
+
+export const getFrontDocs = async () => {
+
+    type retType = {
+        docs: {
+            key: string,
+            value: string,
+        }[],
+        cats: catType[]
+    }
+
+    try {
+
+        // @ts-ignore
+        if (typeof window !== 'undefined') {
+            global = window;
+        }
+        // @ts-ignore
+        const res = (global?.frontDocs as ({data: retType} | undefined)) || await Fetcher.get<retType>('/docs');
+        // @ts-ignore
+        global.frontDocs = res?.data ? res : undefined;
+
+
+        let dods: {
+            imageId: number,
+            productId: number,
+        }[] = [];
+        let sliders: {imageId: number}[] = [];
+        let shippingCharge: number = 0;
+
+        // console.log(res.data);
+        res.data.docs.forEach(y => {
+            if (y.key === 'shippingCharge') {
+                shippingCharge = Number(y.value);
+            }
+
+            // dod image
+            if (y.key.includes('dod') && !y.key.includes('Product')) {
+                const key = y.key.replace('dod', '');
+                if (Number.isInteger(Number(key))) {
+                    const numberKey = Number(key);
+                    let id: number = JSON.parse(y.value);
+                    if (id) {
+                        // dods[numberKey] = {
+                        //     imageUrl: getImageUrl(id),
+                        // }
+                        dods[numberKey] = {
+                            ...(dods[numberKey] || {}),
+                            imageId: id,
+                        };
+                    }
+                }
+            }
+
+            // dod product id
+            if (y.key.includes('ProductId')) {
+                let key = y.key.replace('ProductId', '');
+                key = key.replace('dod', '');
+                if (Number.isInteger(Number(key))) {
+                    const numberKey = Number(key);
+                    let id: number = JSON.parse(y.value);
+                    if (id) {
+                        dods[numberKey] = {
+                            ...(dods[numberKey] || {}),
+                            productId: id,
+                        };
+                    }
+                }
+            }
+
+            // slider image
+            if (y.key.includes('slider')) {
+                // remove prefix
+                const key = y.key.replace('slider', '');
+                // is key a number?
+                if (Number.isInteger(Number(key))) {
+                    // convert key to number
+                    const numberKey = Number(key);
+                    let id: number = JSON.parse(y.value);
+                    if (id) {
+                        sliders[numberKey] = {
+                            imageId: id,
+                        };
+                    }
+                }
+            }
+        });
+        // if dod index-0 empty then remove it
+        if (!dods[0]) {
+            dods.shift();
+        }
+        // if slider index-0 empty then remove it
+        if (!sliders[0]) {
+            sliders.shift();
+        }
+
+        // res.data
+        return {
+            dods,
+            sliders,
+            shippingCharge,
+            cats: res.data.cats as catType[],
+        };
+
+    } catch (e) {
+        console.log(e);
+        return {};
+    }
+};
+
+export const getCategories = async (): Promise<catType[]> => {
+    try {
+        return (await getFrontDocs()).cats || [];
+    } catch (e) {
+        console.log(e);
+        return [];
+    }
+};
+
+export const getDod = async (): Promise<{imageId: number, productId: number}[]> => {
+    try {
+        return (await getFrontDocs())?.dods || [];
+    } catch (e) {
+        console.log(e);
+        return [];
+    }
+};
+
+export const getSliders = async (): Promise<{imageId: number}[]> => {
+    try {
+        return (await getFrontDocs())?.sliders || [];
+    } catch (e) {
+        console.log(e);
+        return [];
+    }
+}
 
 // Admin Orders
 type fd = Order & {items: (OrderItem & {product: {imageId: number} | null})[]}
+
 // (Order & {items: (OrderItem & {product: {imageId: number} | null})[]})[]
 export interface ResOrder extends fd {
     orderStatus: 'pending' | 'processing' | 'completed' | 'cancelled';
@@ -227,4 +371,4 @@ export const getUserOrders = async (query: GetUserOrdersParam): Promise<{orders:
             error: 'Error fetching orders',
         };
     }
-}
+};

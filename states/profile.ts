@@ -26,6 +26,8 @@ export const profileActions = {
             profileState.firstName = profile.firstName || undefined;
             profileState.lastName = profile.lastName || undefined;
             profileState.phone = profile.phone;
+        } else {
+            profileActions.reset();
         }
     },
     reset: () => {
@@ -37,12 +39,14 @@ export const profileActions = {
 };
 
 export const useIsLoggedIn = () => {
-    const [isLoggedIn, setIsLoggedIn] = useState(!!profileState.phone);
+    const [isLoggedIn, setIsLoggedIn] = useState<boolean | undefined>(!!profileState.phone || undefined);
 
     useEffect(() => {
-        setIsLoggedIn(!!profileState.phone);
+        setIsLoggedIn(!!profileState.phone || undefined);
         profileActions.refresh().then(() => {
-            setIsLoggedIn(!!profileState.id);
+            setIsLoggedIn(typeof profileState.id === 'number');
+        }).catch(() => {
+            setIsLoggedIn(false);
         });
     }, []);
     return isLoggedIn;

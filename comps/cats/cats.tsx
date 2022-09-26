@@ -7,7 +7,7 @@ import {useEffect, useState} from 'react';
 import Link from 'next/link';
 import {getUrl} from '../../lib/utils';
 import {useRouter} from 'next/router';
-
+import Image from 'next/image';
 
 function CategoryItem({
                           category,
@@ -29,8 +29,9 @@ function CategoryItem({
         }
         return (
             <>
-                <img height={150} width={150} src={getImageUrl(category.imageId)} alt={category.name}
-                     className={'image'}/>
+                <Image height={150} width={150} src={getImageUrl(category.imageId)} alt={category.name} className={'image'}/>
+                {/*<img height={150} width={150} src={getImageUrl(category.imageId)} alt={category.name}*/}
+                {/*     className={'image'}/>*/}
                 <div className={'name'}>{category.name}</div>
             </>
         );

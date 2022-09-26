@@ -21,17 +21,12 @@ import Link from 'next/link';
 type Props = {
     categories: Category[];
 }
-const Cart: NextPage<Props> = (props) => {
+const Cart: NextPage<Props> = () => {
     const {cart} = useSnapshot(cartState);
     const {searchContainerMargin} = useSnapshot(frontState);
     const hasHydrated = useHasHydrated();
 
     const {bannerA, bannerB, bannerC} = useSnapshot(frontState);
-    useEffect(() => {
-        // initialize category
-        frontState.categories = props?.categories || [];
-
-    }, []);
 
     return (
         <>
@@ -50,17 +45,17 @@ const Cart: NextPage<Props> = (props) => {
                 }}>
                     <CartSummery/>
                     {
-                        hasHydrated && !!cart.length &&
+                        hasHydrated && !!(cart || []).length &&
                         <h3 className={'mt-4 fw-semibold'}>Cart Items</h3>
                     }
                     <div className={'mt-2'}>
                         {
-                            hasHydrated && cart.map(item => (
+                            hasHydrated && (cart || []).map(item => (
                                 <CartItem key={item.product.id} cartItem={item}/>
                             ))
                         }
                         {
-                            hasHydrated && cart.length === 0 && (
+                            hasHydrated && (cart || []).length === 0 && (
                                 <div className={'text-center'}>
                                     <h2 className={'text-center mt-5'}>Your cart is empty!</h2>
                                     <p className={'text-center'}>
@@ -89,13 +84,3 @@ const Cart: NextPage<Props> = (props) => {
 
 export default Cart;
 
-export const getServerSideProps = async (ctx: NextPageContext) => {
-
-    const categories: Category[] = await prisma.category.findMany();
-
-    return {
-        props: {
-            categories,
-        },
-    };
-};

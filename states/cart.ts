@@ -16,20 +16,21 @@ export interface CartItem {
 }
 
 interface CartState {
-    cart: CartItem[];
+    cart?: CartItem[];
 }
 
 export const cartState = proxy<CartState>({
-    cart: [],
+    cart: undefined,
 });
 
 export const cartCalc = derive({
     orderTotal: (get) => {
         const cart = get(cartState).cart;
+        if (!cart) return 0;
         if (cart.length === 0) {
             return '0';
         }
-        const A = cart.reduce((acc, item) => acc + item.product.variant1Price * item.v1Qty + item.product.variant2Price * item.v2Qty, 0);
+        const A = cart?.reduce((acc, item) => acc + item.product.variant1Price * item.v1Qty + item.product.variant2Price * item.v2Qty, 0);
         return numberToMoney(A);
     },
 });
@@ -42,7 +43,10 @@ export const getCartTotal = (cart: CartItem[]) => {
     if (cartA.length === 0) {
         return 0;
     }
-    return cartA.reduce((acc, item) => acc + item.product.variant1Price * item.v1Qty + item.product.variant2Price * item.v2Qty, 0);
+    if (!cartA) {
+        return 0;
+    }
+    return cartA?.reduce((acc, item) => acc + item.product.variant1Price * item.v1Qty + item.product.variant2Price * item.v2Qty, 0);
 }
 
 export const cartActions = {
@@ -59,7 +63,7 @@ export const cartActions = {
             v2Qty = 0;
         }
 
-        const cart = [...cartState.cart];
+        const cart = [...( cartState.cart || [] )];
         const index = cart.findIndex(item => item.product.id === product.id);
         if (index === -1) {
             cart.push({
@@ -82,7 +86,7 @@ export const cartActions = {
         if (v1Qty < 0) {
             return;
         }
-        const cart = [...cartState.cart];
+        const cart = [...( cartState.cart || [] )];
         const index = cart.findIndex(item => item.product.id === product.id);
         if (index === -1) {
             return;
@@ -102,7 +106,7 @@ export const cartActions = {
         if (v2Qty < 0) {
             return;
         }
-        const cart = [...cartState.cart];
+        const cart = [...( cartState.cart || [] )];
         const index = cart.findIndex(item => item.product.id === product.id);
         if (index === -1) {
             return;
@@ -115,7 +119,7 @@ export const cartActions = {
         cartState.cart = cart;
     },
     remove: (productId: number) => {
-        const newcart = [...cartState.cart];
+        const newcart = [...( cartState.cart  || [] )];
         cartState.cart = newcart.filter(item => item.product.id !== productId);
     },
     clear: () => {
@@ -126,7 +130,7 @@ export const cartActions = {
 export const cartUtils = {};
 
 subscribe(cartState, () => {
-    Storage.cart.set(cartState.cart);
+    Storage.cart.set(cartState.cart || []);
 });
 
 
@@ -153,7 +157,7 @@ export const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, 
                 });
             }
         }
-        if (!cartState.cart.length) {
+        if (cartState.cart === undefined) {
             cartState.cart = cartStateNew;
         }
     }

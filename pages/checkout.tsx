@@ -81,7 +81,7 @@ type Ret = {
 type CheckoutPageProps = {
     categories: Category[];
 }
-const CheckoutPage: NextPage<CheckoutPageProps> = (props) => {
+const CheckoutPage: NextPage<CheckoutPageProps> = () => {
     const {cart} = useSnapshot(cartState);
     const [shippingCharge, setShippingCharge] = useState(0);
     const {searchContainerMargin} = useSnapshot(frontState);
@@ -112,8 +112,6 @@ const CheckoutPage: NextPage<CheckoutPageProps> = (props) => {
     useEffect(() => {
         getDeliveryFee().then(setShippingCharge);
         pageState.isCheckoutPage = true;
-        // initialize category
-        frontState.categories = props?.categories || [];
 
         return () => {
             pageState.isCheckoutPage = false;
@@ -121,10 +119,13 @@ const CheckoutPage: NextPage<CheckoutPageProps> = (props) => {
 
     }, []);
 
-    const isEmpty = cart.length === 0;
+    const isEmpty = ( cart || []).length === 0;
 
     const onPayment = async (e: any) => {
-        e.preventDefault();
+        if (!e) {
+            return;
+        }
+        e?.preventDefault();
 
         if (isEmpty) {
             return;
@@ -141,7 +142,7 @@ const CheckoutPage: NextPage<CheckoutPageProps> = (props) => {
             zip,
             email,
             deliveryFee: shippingCharge,
-            items: cart.map(c => ({
+            items: ( cart || []).map(c => ({
                 productId: c.product.id,
                 name: c.product.name,
                 variant1Name: c.product.variant1Name,
@@ -256,7 +257,7 @@ const CheckoutPage: NextPage<CheckoutPageProps> = (props) => {
                                             <h4 className={'mb-3 text-center fw-bold'}>Your Order</h4>
                                         }
                                         {
-                                            hasHydrated && cart.map(item => (
+                                            hasHydrated && ( cart || []).map(item => (
                                                 <CheckoutCartItem key={item.product.id} cartItem={item}/>
                                             ))
                                         }
@@ -287,14 +288,15 @@ const CheckoutPage: NextPage<CheckoutPageProps> = (props) => {
                                         <div className={'checkout-line mb-3'}>
                                             <SumLine label={'Total'}
                                                      value={'SGD ' +
-                                                     (shippingCharge + getCartTotal(cartState.cart)).toFixed(2)
+                                                     (shippingCharge + getCartTotal(cartState?.cart || [])).toFixed(2)
                                                      }/>
                                         </div>
 
                                         <Error/>
                                         <input type="submit" value="Pay Now" className={'btn btn-primary' +
-                                        (isEmpty ? ' disabled' : '')
+                                        (hasHydrated && !( cart || []).length ? ' disabled' : '')
                                         }/>
+                                        {/*{ cart.length }*/}
 
                                     </div>
                                 </div>
@@ -401,15 +403,4 @@ const SumLine = ({label, value, price_qty}: {
             {/*<div className={'col-4 ps-0'}>{value}</div>*/}
         </div>
     );
-};
-
-export const getServerSideProps = async () => {
-
-    const categories: Category[] = await prisma.category.findMany();
-
-    return {
-        props: {
-            categories,
-        },
-    };
 };

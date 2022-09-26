@@ -6,8 +6,16 @@ import axios from 'axios';
 const Test_payment: NextPage<any> = (props) => {
     const [error, setError] = useState<string | false>(false);
 
-    // useEffect(() => {
-    // }, []);
+    useEffect(() => {
+        // replace link to prevent back button
+        window.history.replaceState({}, document.title, 'test_payment_2');
+        window.history.replaceState({}, document.title, 'test_payment_3');
+
+    }, []);
+
+    if (!props.order_id) {
+        return null;
+    }
 
     return (
         <div className={'container'}>

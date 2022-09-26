@@ -5,7 +5,6 @@ import {Fetcher} from '../../lib/fetcher';
 import {PaymentStatusKey} from '../../services/order-meta';
 import {Header} from '../../comps/header/header';
 import {Cats} from '../../comps/cats/cats';
-import {CartSummery} from '../../comps/cartsum/cart-summery';
 import {cartActions} from '../../states/cart';
 import {Container} from '../../comps/container';
 import {useHasHydrated} from '../../lib/utils';
@@ -13,16 +12,13 @@ import {useSnapshot} from 'valtio';
 import frontState from '../../states/front';
 import {Background} from '../../comps/background';
 import {Banner} from '../../comps/banner';
-import {NextPageContext} from 'next';
-import {Category} from '@prisma/client';
-import {prisma} from '../../prisma';
 import {useIsLoggedIn} from '../../states/profile';
 
 
-const OrderSuccess: NextPage = (props) => {
+const OrderSuccess: NextPage = () => {
     const [success, setSuccess] = useState(false);
     const [loaded, setLoaded] = useState(false);
-    const {searchContainerMargin, windowWidth} = useSnapshot(frontState);
+    const {windowWidth} = useSnapshot(frontState);
 
     const {bannerA, bannerB, bannerC} = useSnapshot(frontState);
     const hasHydrated = useHasHydrated();
@@ -32,6 +28,15 @@ const OrderSuccess: NextPage = (props) => {
     const {order_id} = query;
 
     useEffect(() => {
+
+        cartActions.clear();
+        // run clear after 2 seconds
+        setTimeout(() => {
+            cartActions.clear();
+        }, 2000);
+        setTimeout(() => {
+            cartActions.clear();
+        }, 1000);
 
         // is order id is number
         if (order_id && !isNaN(Number(order_id))) {
@@ -56,15 +61,7 @@ const OrderSuccess: NextPage = (props) => {
 
     }, [query]);
 
-    useEffect(() => {
-        // initialize category
-        // @ts-ignore
-        frontState.categories = props?.categories || [];
-
-    }, []);
-
-
-    if (!isLoggedIn && hasHydrated) {
+    if (isLoggedIn === false && hasHydrated) {
         // redirect to home
         window.location.href = '/';
     }
@@ -82,7 +79,7 @@ const OrderSuccess: NextPage = (props) => {
             <Header/>
             <Container className="container search">
                 <Cats/>
-                <div className={'mt-5 text-center'} style={{
+                <div className={'mt-7 text-center'} style={{
                     // marginLeft: hasHydrated ? searchContainerMargin : 0,
                     // marginRight: hasHydrated ? searchContainerMargin : 0,
                     marginLeft: 'auto',
@@ -121,13 +118,3 @@ const OrderSuccess: NextPage = (props) => {
 
 export default OrderSuccess;
 
-export const getServerSideProps = async (ctx: NextPageContext) => {
-
-    const categories: Category[] = await prisma.category.findMany();
-
-    return {
-        props: {
-            categories,
-        },
-    };
-};

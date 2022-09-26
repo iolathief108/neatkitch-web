@@ -4,19 +4,16 @@ import {useEffect} from 'react';
 import {Fetcher} from '../../lib/fetcher';
 import {Header} from '../../comps/header/header';
 import {Cats} from '../../comps/cats/cats';
-import {NextPageContext} from 'next';
-import {Category} from '@prisma/client';
-import {prisma} from '../../prisma';
 import frontState from '../../states/front';
 import {Container} from '../../comps/container';
-import {formatPhoneNumber, useHasHydrated} from '../../lib/utils';
+import {useHasHydrated} from '../../lib/utils';
 import {Background} from '../../comps/background';
 import {Banner} from '../../comps/banner';
 import {useSnapshot} from 'valtio';
 import {useIsLoggedIn} from '../../states/profile';
 
 
-const OrderFailed: NextPage = (props) => {
+const OrderFailed: NextPage = () => {
     const {query} = useRouter();
     const {order_id} = query;
 
@@ -40,13 +37,6 @@ const OrderFailed: NextPage = (props) => {
         });
     }, [query]);
 
-    useEffect(() => {
-        // initialize category
-        // @ts-ignore
-        frontState.categories = props?.categories || [];
-
-    }, []);
-
 
     if (!isLoggedIn && hasHydrated) {
         // redirect to home
@@ -62,7 +52,7 @@ const OrderFailed: NextPage = (props) => {
             <Header/>
             <Container className="container search">
                 <Cats/>
-                <div className={'mt-5 text-center'} style={{
+                <div className={'mt-7 text-center'} style={{
                     // marginLeft: hasHydrated ? searchContainerMargin : 0,
                     // marginRight: hasHydrated ? searchContainerMargin : 0,
                     marginLeft: 'auto',
@@ -102,14 +92,3 @@ const OrderFailed: NextPage = (props) => {
 
 export default OrderFailed;
 
-
-export const getServerSideProps = async (ctx: NextPageContext) => {
-
-    const categories: Category[] = await prisma.category.findMany();
-
-    return {
-        props: {
-            categories,
-        },
-    };
-};

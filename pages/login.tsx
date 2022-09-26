@@ -1,6 +1,5 @@
 import {Header} from '../comps/header/header';
 import type {NextPage} from 'next';
-import {NextPageContext} from 'next';
 import {proxy, useSnapshot} from 'valtio';
 import {Fetcher} from '../lib/fetcher';
 import Router from 'next/router';
@@ -12,8 +11,6 @@ import frontState from '../states/front';
 import {Cats} from '../comps/cats/cats';
 import {Banner} from '../comps/banner';
 import {Background} from '../comps/background';
-import {Category} from '@prisma/client';
-import {prisma} from '../prisma';
 import Head from 'next/head';
 
 
@@ -33,7 +30,7 @@ const state = proxy<LoginState>({
     error: '',
 });
 
-const Login: NextPage = (props: any) => {
+const Login: NextPage = () => {
 
     const {otpSent, phone, otp, isLoading, error} = useSnapshot(state);
 
@@ -44,8 +41,6 @@ const Login: NextPage = (props: any) => {
 
     useEffect(() => {
 
-        frontState.categories = props?.categories || [];
-
         // if logged in, redirect to home
         Fetcher.get<{user: boolean}>('/user/login').then((res) => {
             if (res.data?.user) {
@@ -54,6 +49,15 @@ const Login: NextPage = (props: any) => {
         }).catch(e => {
             console.log(e);
         });
+        return () => {
+            // reset login state
+            state.otpSent = false;
+            state.otp = '';
+            state.phone = '';
+            state.isLoading = false;
+            state.error = '';
+        }
+
     }, []);
 
     const runTimer = () => {
@@ -233,13 +237,3 @@ const Login: NextPage = (props: any) => {
 
 export default Login;
 
-export const getServerSideProps = async (ctx: NextPageContext) => {
-
-    const categories: Category[] = await prisma.category.findMany();
-
-    return {
-        props: {
-            categories,
-        },
-    };
-};

@@ -1,7 +1,6 @@
 import {useSnapshot} from 'valtio';
 import frontState from '../../states/front';
 import Slider, {Settings} from 'react-slick';
-import {useEffect} from 'react';
 
 
 type ItemProps = {
@@ -11,13 +10,24 @@ const Item = ({url}: ItemProps) => {
     return (
         <div style={{
             // width: '100%',
-            height: '100%'
+            height: '100%',
         }}>
-            <img style={{
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover'
-            }} src={url}/>
+            <img
+                style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                }}
+                src={url}
+                onLoad={() => {
+                    frontState.mainBannerLoaded = true;
+                }}
+                onLoadStart={() => {
+                    setTimeout(() => {
+                        frontState.mainBannerLoaded = true;
+                    }, 250);
+                }}
+            />
         </div>
     );
 };
@@ -28,6 +38,9 @@ type CarouselProps = {
 }
 
 export function Carousel(props: CarouselProps) {
+
+    const {mainBannerLoaded, noDodLoaded} = useSnapshot(frontState);
+
     const settings: Settings = {
         dots: false,
         infinite: true,
@@ -36,15 +49,17 @@ export function Carousel(props: CarouselProps) {
         slidesToScroll: 1,
         autoplay: true,
         autoplaySpeed: 7000,
+        // lazyLoad: 'ondemand',
+        lazyLoad: (mainBannerLoaded && noDodLoaded > 3) ? undefined : 'ondemand',
 
         responsive: [
             {
                 breakpoint: 768,
                 settings: {
-                    arrows: false
-                }
-            }
-        ]
+                    arrows: false,
+                },
+            },
+        ],
     };
     return (
         <div style={{

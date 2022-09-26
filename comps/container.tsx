@@ -4,6 +4,7 @@ import React, {useEffect} from 'react';
 import {Footer} from './footer/footer';
 import TawkTo from 'tawkto-react';
 import {tawkConfig} from '../lib/config';
+import {getCategories} from '../lib/fetcher';
 
 
 interface ContainerProps {
@@ -13,15 +14,30 @@ interface ContainerProps {
 
 export function Container(props: ContainerProps) {
 
-    const {headerHeight} = useSnapshot(frontState);
+    const {headerHeight, mainBannerLoaded, noDodLoaded} = useSnapshot(frontState);
+    const [isTawkLoaded, setIsTawkLoaded] = React.useState(false);
 
     // if not server side
     useEffect(() => {
         if (typeof window !== 'undefined') {
-            const tawk = new TawkTo(tawkConfig.propertyId, tawkConfig.tawkId);
+
+            if (mainBannerLoaded || noDodLoaded > 3 && !isTawkLoaded) {
+                setTimeout(() => {
+                    new TawkTo(tawkConfig.propertyId, tawkConfig.tawkId);
+                    setIsTawkLoaded(true);
+                }, 2000);
+            }
+            // const tawk = new TawkTo(tawkConfig.propertyId, tawkConfig.tawkId);
             // tawk.hideWidget()
         }
-    }, []);
+    }, [mainBannerLoaded, noDodLoaded]);
+
+    useEffect(() => {
+
+        getCategories().then((categories) => {
+            frontState.categories = categories;
+        });
+    } , []);
 
     return (
         <>
@@ -38,7 +54,7 @@ export function Container(props: ContainerProps) {
 
             </div>
 
-            <div className="copywrite" style={{
+            <div className="copywrite mt-4" style={{
                 overflow: 'hidden',
             }}>
                 <div style={{
