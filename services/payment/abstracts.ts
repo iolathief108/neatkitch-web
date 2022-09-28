@@ -6,7 +6,8 @@ import {sendMail} from '../email';
 import moment from 'moment';
 import {getInvoiceTemplate, TInvoiceData} from '../template';
 import inlineCss from 'inline-css';
-import {disableEmail, newOrderEmail} from '../../lib/config';
+import {disableEmail} from '../../lib/config';
+import {newOrderEmail} from '../../lib/config-server';
 
 
 export class damn<T> {
@@ -49,14 +50,14 @@ export abstract class PaymentNotify {
             this.res.json({
                 error: 'Order ID must be a number',
                 debug: id,
-            })
+            });
             return undefined;
             // throw new Error('Order not found');
         }
         const order = await prisma.order.findUnique({
             where: {id},
             include: {
-                items: true
+                items: true,
             },
         });
         if (!order) {
@@ -116,11 +117,11 @@ export abstract class PaymentNotify {
                     },
                     data: {
                         variant1Qty: {
-                             decrement: item.variant1Qty,
+                            decrement: item.variant1Qty,
                         },
                         variant2Qty: {
                             decrement: item.variant2Qty,
-                        }
+                        },
                     },
                 });
             }
@@ -191,8 +192,10 @@ export abstract class PaymentNotify {
         });
 
         if (!disableEmail) {
-            await sendMail(order.email, subject,undefined, bodyInline);
-            await sendMail(newOrderEmail, subject,undefined, bodyInline);
+            await sendMail(order.email, subject, undefined, bodyInline);
+            if (newOrderEmail) {
+                await sendMail(newOrderEmail, subject, undefined, bodyInline);
+            }
         }
     }
 }
@@ -210,13 +213,13 @@ export class SendResponse {
     async orderNotFound() {
         this.res.status(404).json({
             error: 'Order not found',
-        })
+        });
     }
 
     async paymentFailed() {
         this.res.status(400).json({
             error: 'Payment failed',
-        })
+        });
     }
 }
 
@@ -226,7 +229,8 @@ export abstract class PaymentUrl {
 
     protected cancelUrl: string = '/order/failed';
 
-    constructor(protected order: Order & {items: OrderItem[]}) {}
+    constructor(protected order: Order & {items: OrderItem[]}) {
+    }
 
     abstract getRedirectUrl(): string;
 

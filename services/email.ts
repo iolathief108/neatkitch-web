@@ -1,5 +1,5 @@
 import nodemailer from 'nodemailer'
-import {senderEmail, senderEmailName} from '../lib/config';
+import {senderEmail, senderEmailName} from '../lib/config-server';
 
 
 // Mail sending service

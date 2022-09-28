@@ -2,7 +2,7 @@ import {useEffect, useLayoutEffect, useState} from 'react';
 import pageState from '../states/page';
 import {Fetcher} from './fetcher';
 import {parsePhoneNumber} from 'libphonenumber-js';
-import {isStaging} from './config';
+import {isStaging, mobilePrefix} from './config';
 
 
 export function getQuery(param?: {cat?: string, key?: string, pin?: string}) {
@@ -81,6 +81,11 @@ export function getUrl(param?: {categorySlug?: string | string[], keywords?: str
     }
 
     return '/search';
+}
+
+export function isSubdomain(url: string) {
+    const regex = new RegExp(/^([a-z]+\:\/{2})?([\w-]+\.[\w-]+\.\w+)$/);
+    return !!url.match(regex);
 }
 
 export function useHasHydrated(beforePaint = true) {
@@ -200,7 +205,7 @@ export function getSearchContainerWidth() {
 }
 
 export function getSearchContentSideSpace() {
-    const containerSpace = ( getWindowWidth() - getContainerWidth() ) / 2;
+    const containerSpace = (getWindowWidth() - getContainerWidth()) / 2;
     const margin = getSearchContainerMargin();
     return containerSpace + margin;
 }
@@ -208,7 +213,7 @@ export function getSearchContentSideSpace() {
 export function formatPhoneNumber(phoneNumberString: string) {
     try {
         const phoneNumber = parsePhoneNumber(phoneNumberString);
-        let phone = phoneNumber.formatInternational()
+        let phone = phoneNumber.formatInternational();
         if (phone) {
             return phone;
         } else {
@@ -231,13 +236,13 @@ export const getStdPhone = (phone) => {
     }
 
     if (phone?.startsWith('+')) {
-        if (!phone.startsWith('+65')) {
+        if (!phone.startsWith(mobilePrefix)) {
             return false;
         }
     } else {
-        phone = '+65' + phone;
+        phone = mobilePrefix + phone;
     }
 
 
     return phone;
-}
+};
