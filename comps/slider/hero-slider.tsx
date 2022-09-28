@@ -1,6 +1,7 @@
 import {useSnapshot} from 'valtio';
 import frontState from '../../states/front';
 import Slider, {Settings} from 'react-slick';
+import {isDevelopment} from '../../lib/config';
 
 
 type ItemProps = {
@@ -47,8 +48,8 @@ export function Carousel(props: CarouselProps) {
         speed: 700,
         slidesToShow: 1,
         slidesToScroll: 1,
-        autoplay: true,
-        autoplaySpeed: 7000,
+        autoplay: !isDevelopment,
+        autoplaySpeed: 3000,
         // lazyLoad: 'ondemand',
         lazyLoad: (mainBannerLoaded && noDodLoaded > 3) ? undefined : 'ondemand',
 

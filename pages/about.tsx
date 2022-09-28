@@ -30,7 +30,7 @@ const About: NextPage = () => {
                     marginLeft: hasHydrated ? searchContainerMargin : 0,
                     marginRight: hasHydrated ? searchContainerMargin : 0,
                 }}>
-                    <h1>Get in touch with us!</h1>
+                    <h1>About Us</h1>
                     <p>
                         NeatKitch is a singapore-based ecommerce company that specializes in selling the highest quality
                         vegetables, fruits, and other kitchen items. We take pride in sourcing our products from local
@@ -48,7 +48,6 @@ const About: NextPage = () => {
                 </div>
             </Container>
             <Background withMargin align={'right'} bg={'/static/images/right-bg.jpg'}/>
-            <Background align={'right'} bg={'/static/images/home-right-bg.png'}/>
 
             {
                 windowWidth > 1200 &&

@@ -99,7 +99,6 @@ const OrderSuccess: NextPage = () => {
                 </div>
             </Container>
             <Background withMargin align={'right'} bg={'/static/images/right-bg.jpg'}/>
-            <Background align={'right'} bg={'/static/images/home-right-bg.png'}/>
 
             {
                 windowWidth > 1200 &&

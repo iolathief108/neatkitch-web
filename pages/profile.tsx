@@ -1,10 +1,8 @@
 import type {NextPage} from 'next';
-import {NextPageContext} from 'next';
 import {Header} from '../comps/header/header';
 import {useEffect, useState} from 'react';
 import frontState from '../states/front';
 import {Category} from '@prisma/client';
-import {prisma} from '../prisma';
 import {proxy, useSnapshot} from 'valtio';
 import profileState, {profileActions} from '../states/profile';
 import {Fetcher} from '../lib/fetcher';
@@ -122,7 +120,7 @@ const Profile: NextPage<Props> = () => {
             } else {
                 state.error = 'Invalid phone number';
             }
-        }).catch(err => {
+        }).catch(() => {
             state.error = 'Error';
         }).finally(() => {
             state.isLoading = false;
@@ -254,7 +252,6 @@ const Profile: NextPage<Props> = () => {
                 </div>
             </Container>
             <Background withMargin align={'right'} bg={'/static/images/right-bg.jpg'}/>
-            <Background align={'right'} bg={'/static/images/home-right-bg.png'}/>
 
             {
                 windowWidth > 1200 &&

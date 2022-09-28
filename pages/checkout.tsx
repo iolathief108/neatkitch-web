@@ -14,7 +14,6 @@ import {CartSummery} from '../comps/cartsum/cart-summery';
 import Link from 'next/link';
 import {Container} from '../comps/container';
 import {Category} from '@prisma/client';
-import {prisma} from '../prisma';
 import Head from 'next/head';
 
 
@@ -66,9 +65,6 @@ const Field = ({
     );
 };
 
-// convert string to float
-// const toFloat = (str: string) => parseFloat(str.replace(/,/g, ''));
-
 type Ret = {
     payment: {
         url: string,
@@ -119,7 +115,7 @@ const CheckoutPage: NextPage<CheckoutPageProps> = () => {
 
     }, []);
 
-    const isEmpty = ( cart || []).length === 0;
+    const isEmpty = (cart || []).length === 0;
 
     const onPayment = async (e: any) => {
         if (!e) {
@@ -142,7 +138,7 @@ const CheckoutPage: NextPage<CheckoutPageProps> = () => {
             zip,
             email,
             deliveryFee: shippingCharge,
-            items: ( cart || []).map(c => ({
+            items: (cart || []).map(c => ({
                 productId: c.product.id,
                 name: c.product.name,
                 variant1Name: c.product.variant1Name,
@@ -214,9 +210,7 @@ const CheckoutPage: NextPage<CheckoutPageProps> = () => {
                     marginLeft: hasHydrated ? searchContainerMargin : 0,
                     marginRight: hasHydrated ? searchContainerMargin : 0,
                 }}>
-                    {/*<CheckoutSummery/>*/}
                     <CartSummery isPaynow onPay={onPayment} isDisable={isEmpty}/>
-                    {/*<p>shipping charge {shippingCharge}</p>*/}
                     <div className={'mt-4'}>
                         <form onSubmit={onPayment}>
                             <div className={'row'}>
@@ -257,7 +251,7 @@ const CheckoutPage: NextPage<CheckoutPageProps> = () => {
                                             <h4 className={'mb-3 text-center fw-bold'}>Your Order</h4>
                                         }
                                         {
-                                            hasHydrated && ( cart || []).map(item => (
+                                            hasHydrated && (cart || []).map(item => (
                                                 <CheckoutCartItem key={item.product.id} cartItem={item}/>
                                             ))
                                         }
@@ -294,17 +288,16 @@ const CheckoutPage: NextPage<CheckoutPageProps> = () => {
 
                                         <Error/>
                                         <input type="submit" value="Pay Now" className={'btn btn-primary' +
-                                        (hasHydrated && !( cart || []).length ? ' disabled' : '')
+                                        (hasHydrated && !(cart || []).length ? ' disabled' : '')
                                         }/>
-                                        {/*{ cart.length }*/}
 
                                     </div>
                                 </div>
                             </div>
                         </form>
-
                     </div>
-                    {/*below form is a hidden and DONOT care about it PLEASE - NOT FOR UI*/}
+
+                    {/* hidden form below - aka IGNORE */}
                     {
                         createOrderResponse?.data?.payment?.method === 'POST' && (
                             <form id={'form-dataid'} ref={formRef} method={createOrderResponse?.data?.payment?.method}
