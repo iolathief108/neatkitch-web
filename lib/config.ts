@@ -17,6 +17,7 @@ export const changePerPage = (newPerPage: number) => {
 
 
 export const isDevelopment = true;
+export const isStaging = true;
 export const devPort = 3000;
 //todo: important this should be true for production
 export const isForceSMS = false;

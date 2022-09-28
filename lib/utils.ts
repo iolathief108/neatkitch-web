@@ -2,6 +2,7 @@ import {useEffect, useLayoutEffect, useState} from 'react';
 import pageState from '../states/page';
 import {Fetcher} from './fetcher';
 import {parsePhoneNumber} from 'libphonenumber-js';
+import {isStaging} from './config';
 
 
 export function getQuery(param?: {cat?: string, key?: string, pin?: string}) {
@@ -205,16 +206,29 @@ export function getSearchContentSideSpace() {
 }
 
 export function formatPhoneNumber(phoneNumberString: string) {
-    const phoneNumber = parsePhoneNumber(phoneNumberString);
-    let phone = phoneNumber.formatInternational()
-    if (phone) {
-        return phone;
-    } else {
+    try {
+        const phoneNumber = parsePhoneNumber(phoneNumberString);
+        let phone = phoneNumber.formatInternational()
+        if (phone) {
+            return phone;
+        } else {
+            return phoneNumberString;
+        }
+    } catch (e) {
         return phoneNumberString;
     }
 }
 
 export const getStdPhone = (phone) => {
+
+    // replace any - with ''
+    phone = phone.replace(/-/g, '');
+    // replace any space with ''
+    phone = phone.replace(/ /g, '');
+
+    if (isStaging) {
+        return phone;
+    }
 
     if (phone?.startsWith('+')) {
         if (!phone.startsWith('+65')) {
@@ -224,10 +238,6 @@ export const getStdPhone = (phone) => {
         phone = '+65' + phone;
     }
 
-    // replace any - with ''
-    phone = phone.replace(/-/g, '');
-    // replace any space with ''
-    phone = phone.replace(/ /g, '');
 
     return phone;
 }

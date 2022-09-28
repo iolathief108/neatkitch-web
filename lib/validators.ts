@@ -1,7 +1,11 @@
-import {mobilePrefix} from './config';
+import {isStaging, mobilePrefix} from './config';
 
 
 export function validatePhone(phone: string) {
+
+    if (isStaging) {
+        return true;
+    }
     function isNumeric(str: string) {
         if (typeof str != "string") return false;
         return !isNaN(str as any) && !isNaN(parseFloat(str));
@@ -28,11 +32,17 @@ export function validatePassword(password: string) {
 }
 
 export function validateZip(zip: string) {
+    if (isStaging) {
+        return true;
+    }
     const zipPattern = /^[0-9]{5}$/;
     return !!zip?.match(zipPattern);
 }
 
 export const validateStandardSingaporePhone = (phone: string) => {
+    if (isStaging) {
+        return true;
+    }
     const phonePattern = /^\+65[689]\d{7}$/g;
     return !!phone?.match(phonePattern);
 }
