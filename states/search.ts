@@ -83,13 +83,6 @@ export const searchActions = {
                     products.splice(pinIndex, 1);
                 }
 
-                // const pinProduct = await getProduct(pinId);
-                // if (pinProduct) {
-                //     const pinIndex = products.findIndex(product => product.id === pinProduct.id);
-                //     if (pinIndex > -1) {
-                //         products.splice(pinIndex, 1);
-                //     }
-                // }
             }
 
             searchState.products = [...searchState.products, ...products];
@@ -117,25 +110,28 @@ export const searchActions = {
             page: 1,
             take: perPage,
         });
-        if (pinId) {
-            const product = await getProduct(pinId);
-            if (product) {
-                products.products.unshift(product);
-            }
-        }
+
+        // experimental
 
         searchState.pageLoading = false;
         if (!products.error) {
+
             searchState.search = {
                 keywords: keywords || undefined,
                 categorySlug: categorySlug || undefined,
                 pinId: pinId || undefined,
             };
 
-            // experimental
             const pinIndex = products?.products.findIndex(product => product.id === pinId);
             if (pinIndex > -1) {
                 products?.products.splice(pinIndex, 1);
+            }
+
+            if (pinId) {
+                const product = await getProduct(pinId);
+                if (product) {
+                    products.products.unshift(product);
+                }
             }
 
             searchState.products = products.products;
