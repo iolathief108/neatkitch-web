@@ -40,12 +40,17 @@ const OrderFailed: NextPage = () => {
 
     if (!isLoggedIn && hasHydrated) {
         // redirect to home
-        window.location.href = '/';
+        setTimeout(() => {
+            if (!isLoggedIn) {
+                window.location.href = '/';
+            }
+        } , 1500);
+
+        if (!isLoggedIn) {
+            return null;
+        }
     }
 
-    if (!isLoggedIn) {
-        return null;
-    }
 
     return (
         <>
@@ -75,7 +80,6 @@ const OrderFailed: NextPage = () => {
                 </div>
             </Container>
             <Background withMargin align={'right'} bg={'/static/images/right-bg.jpg'}/>
-            <Background align={'right'} bg={'/static/images/home-right-bg.png'}/>
 
             {
                 windowWidth > 1200 &&
