@@ -26,8 +26,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
                 },
             });
             if (product) {
-
-
                 res.status(200).json(product);
             } else {
                 res.status(404).end();

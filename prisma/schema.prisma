@@ -54,9 +54,13 @@ model Product {
   variant1Name    String      @map("variant_1_name")
   variant1Price   Float         @map("variant_1_price")
   variant1InStock Boolean     @map("variant_1_in_stock")
+  variant1Qty     Int?        @map("variant_1_qty")
+
   variant2Name    String      @map("variant_2_name")
   variant2Price   Float         @map("variant_2_price")
   variant2InStock Boolean     @map("variant_2_in_stock")
+  variant2Qty     Int?        @map("variant_2_qty")
+
   createdAt       DateTime    @default(now()) @map("created_at")
   orderItems      OrderItem[]
 }

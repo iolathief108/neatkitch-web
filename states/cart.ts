@@ -47,7 +47,7 @@ export const getCartTotal = (cart: CartItem[]) => {
         return 0;
     }
     return cartA?.reduce((acc, item) => acc + item.product.variant1Price * item.v1Qty + item.product.variant2Price * item.v2Qty, 0);
-}
+};
 
 export const cartActions = {
     add: (product: Product, v1Qty: number, v2Qty: number) => {
@@ -62,9 +62,11 @@ export const cartActions = {
         if (!product.variant2InStock) {
             v2Qty = 0;
         }
-
-        const cart = [...( cartState.cart || [] )];
+        const cart = [...(cartState.cart || [])];
         const index = cart.findIndex(item => item.product.id === product.id);
+
+
+
         if (index === -1) {
             cart.push({
                 product,
@@ -72,6 +74,14 @@ export const cartActions = {
                 v2Qty,
             });
         } else {
+            if (product.variant1Qty && product.variant1Qty < cart[index].v1Qty + v1Qty) {
+                alert('Variant 1 quantity is not available');
+                return;
+            }
+            if (product.variant2Qty && product.variant2Qty < cart[index].v2Qty + v2Qty) {
+                alert('Variant 2 quantity is not available');
+                return;
+            }
             cart[index].v1Qty += v1Qty;
             cart[index].v2Qty += v2Qty;
         }
@@ -86,7 +96,11 @@ export const cartActions = {
         if (v1Qty < 0) {
             return;
         }
-        const cart = [...( cartState.cart || [] )];
+        if (product.variant1Qty && product.variant1Qty < v1Qty) {
+            alert('Variant 1 quantity is not available');
+        }
+
+        const cart = [...(cartState.cart || [])];
         const index = cart.findIndex(item => item.product.id === product.id);
         if (index === -1) {
             return;
@@ -106,7 +120,12 @@ export const cartActions = {
         if (v2Qty < 0) {
             return;
         }
-        const cart = [...( cartState.cart || [] )];
+
+        if (product.variant2Qty && product.variant2Qty < v2Qty) {
+            alert('Variant 2 quantity is not available');
+        }
+
+        const cart = [...(cartState.cart || [])];
         const index = cart.findIndex(item => item.product.id === product.id);
         if (index === -1) {
             return;
@@ -119,7 +138,7 @@ export const cartActions = {
         cartState.cart = cart;
     },
     remove: (productId: number) => {
-        const newcart = [...( cartState.cart  || [] )];
+        const newcart = [...(cartState.cart || [])];
         cartState.cart = newcart.filter(item => item.product.id !== productId);
     },
     clear: () => {

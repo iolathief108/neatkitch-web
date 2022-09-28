@@ -3,36 +3,44 @@ import {getImageUrl} from '../../lib/config';
 import {useState} from 'react';
 import {cartActions} from '../../states/cart';
 import {numberToMoney} from '../../lib/utils';
-import Image from 'next/image'
+import Image from 'next/image';
 
 
 interface Props {
     product: Product;
 }
 
-function Quantity({quantity, setQuantity, disable}: any) {
+function Quantity({quantity, setQuantity, disable, maxQty}: any) {
+
+    const isOutOfStock = maxQty === 0;
 
     return (
         <span className={'qtyva' + (
             disable ? ' disabled' : ''
         )}>
-            <button onClick={() => {
+            <button disabled={isOutOfStock} onClick={() => {
                 if (disable) return;
                 if (quantity > 0) {
                     setQuantity(quantity - 1);
                 }
             }}>-</button>
-            <div className={'value'}>
+            <div className={'value ' + (isOutOfStock && 'opacity-50')}>
                 <span>{quantity}</span>
             </div>
-            <button onClick={() => {
+            <button disabled={isOutOfStock} onClick={() => {
+
                 if (disable) {
                     return;
                 }
                 if (quantity > 30) {
                     return;
                 }
-                setQuantity(quantity + 1);
+                if (maxQty === undefined || quantity < maxQty) {
+                    setQuantity(quantity + 1);
+                } else {
+                    setQuantity(maxQty);
+                    alert('Max quantity reached');
+                }
             }}>+</button>
         </span>
     );
@@ -43,9 +51,9 @@ export function ProductCard({product}: Props) {
     const [v1Qty, setV1Qty] = useState(product.variant1InStock ? 0 : 0);
     const [v2Qty, setV2Qty] = useState(product.variant2InStock ? 0 : 0);
 
-    const getV1Qty = () => product.variant1Price * v1Qty;
-    const getV2Qty = () => product.variant2Price * v2Qty;
-    const getTotal = () => (getV1Qty() + getV2Qty()).toFixed(2);
+    const getV1Total = () => product.variant1Price * v1Qty;
+    const getV2Total = () => product.variant2Price * v2Qty;
+    const getTotal = () => (getV1Total() + getV2Total()).toFixed(2);
 
     const onAddToCart = () => {
         cartActions.add(product, v1Qty, v2Qty);
@@ -55,12 +63,13 @@ export function ProductCard({product}: Props) {
         setV2Qty(product.variant2InStock ? 0 : 0);
     };
 
-    const VariationInfo = (prop: {price: number, name: string, qty: number, setQty: any, isInStock: boolean}) => {
+    const VariationInfo = (prop: {price: number, name: string, qty: number, setQty: any, isInStock: boolean, maxQty?: number}) => {
         return (
             <>
                 <div className={'total'}><span>SGD {numberToMoney(prop.price)}</span></div>
                 <div className={'var-name'}>{prop.name}</div>
-                <Quantity quantity={prop.qty} setQuantity={prop.setQty} disable={!prop.isInStock}/>
+                <Quantity quantity={prop.qty} setQuantity={prop.setQty} disable={!prop.isInStock}
+                          maxQty={prop?.maxQty}/>
             </>
         );
     };
@@ -70,17 +79,19 @@ export function ProductCard({product}: Props) {
             <div className={'inner row'}>
                 <div className={'image order-1 col-6 col-sm-3 pe-0'}>
                     <div className={'image-container position-relative'}>
-                        <Image src={getImageUrl(product.imageId)} alt={product.name} height={225} width={300} />
+                        <Image src={getImageUrl(product.imageId)} alt={product.name} height={225} width={300}/>
                         {/*<img src={getImageUrl(product.imageId)} alt=""/>*/}
                         <h2 className={'name'}>{product.name}</h2>
                     </div>
                 </div>
                 <div className={'var var1 order-3 order-sm-2 col-6 col-sm-3 mt-4 mt-sm-0 pe-0'}>
                     <VariationInfo price={product.variant1Price} name={product.variant1Name} qty={v1Qty}
+                                   maxQty={product.variant1Qty === null ? undefined : product.variant1Qty}
                                    setQty={setV1Qty} isInStock={product.variant1InStock}/>
                 </div>
                 <div className={'var var2 order-4 order-sm-3 col-6 col-sm-3 mt-4 mt-sm-0 ps-0'}>
                     <VariationInfo price={product.variant2Price} name={product.variant2Name} qty={v2Qty}
+                                   maxQty={product.variant2Qty === null ? undefined : product.variant2Qty}
                                    setQty={setV2Qty} isInStock={product.variant2InStock}/>
                 </div>
                 <div className={'atc  order-2 order-sm-4 col-6 col-sm-3'}>

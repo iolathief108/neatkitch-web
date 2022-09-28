@@ -1,5 +1,6 @@
 import type {NextPage} from 'next';
 import type {Product} from '@prisma/client';
+import {Category} from '@prisma/client';
 import AdminLayout from '../../layouts/admin';
 import Link from 'next/link';
 import {useEffect, useState} from 'react';
@@ -7,10 +8,7 @@ import {changePerPage} from '../../lib/config';
 import {useSnapshot} from 'valtio';
 import {searchActions, searchState} from '../../states/search';
 import {Fetcher} from '../../lib/fetcher';
-import {getQuery, getUrl} from '../../lib/utils';
-import {useRouter} from 'next/router';
-import {NextPageContext} from 'next';
-import {Category} from '@prisma/client';
+import {getQuery} from '../../lib/utils';
 import {prisma} from '../../prisma';
 import frontState from '../../states/front';
 
@@ -99,7 +97,11 @@ const SingleVariant = (props: any) => {
                             <input type={'checkbox'} disabled={true}/>
                     }
                 </span>
-                <span className={'ps-0 offset-0'}>{props.name}</span>
+                <span className={'fw-bold ms-2' + ` ${props.qty === 0 && 'text-danger'}`}>
+                    {props.qty}
+                    {props.qty === null && '∞'}
+                </span>
+                <span className={'ps-0 offset-1'}>{props.name}</span>
                 <span className={'offset-1'}>SGD {props.price}</span>
                 {/*<span>{props.stock ? 'In Stock' : 'Out of Stock'}</span>*/}
             </div>
@@ -137,9 +139,9 @@ const ProductRow = ({product}: {product: Product & {imageId: number}}) => {
             </div>
             <div className={'col-2 align-middle name fw-bolder'}>{product.name}</div>
             <SingleVariant className={'col-3'} title={'Type 1'} name={product.variant1Name}
-                           price={product.variant1Price} stock={product.variant1InStock}/>
+                           price={product.variant1Price} stock={product.variant1InStock} qty={product.variant1Qty}/>
             <SingleVariant className={'col-3 p-0'} title={'Type 2'} name={product.variant2Name}
-                           price={product.variant2Price} stock={product.variant2InStock}/>
+                           price={product.variant2Price} stock={product.variant2InStock} qty={product.variant2Qty}/>
             <div className={'col-1'}>
                 {
                     product.enabled ? <input type={'checkbox'} checked={true} disabled={true}/> :

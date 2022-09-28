@@ -103,6 +103,29 @@ export abstract class PaymentNotify {
             return false;
         }
 
+        // reduce stock
+        const order = await this.getOrder();
+        if (order) {
+            for (const item of order.items) {
+                if (!item.productId) {
+                    continue;
+                }
+                await prisma.product.update({
+                    where: {
+                        id: item.productId,
+                    },
+                    data: {
+                        variant1Qty: {
+                             decrement: item.variant1Qty,
+                        },
+                        variant2Qty: {
+                            decrement: item.variant2Qty,
+                        }
+                    },
+                });
+            }
+        }
+
         return true;
     }
 

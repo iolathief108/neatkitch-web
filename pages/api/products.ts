@@ -80,6 +80,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             imageId: true,
             variant1Price: true,
             variant2Price: true,
+            variant1Qty: true,
+            variant2Qty: true,
             variant1InStock: true,
             variant2InStock: true,
             variant1Name: true,

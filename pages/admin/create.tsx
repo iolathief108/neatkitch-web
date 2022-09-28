@@ -15,38 +15,44 @@ interface Interface {
     variant1Name?: string;
     variant1Price?: number;
     variant1InStock?: boolean;
+    variant1Qty?: number;
     variant2Name?: string;
     variant2Price?: number;
     variant2InStock?: boolean;
+    variant2Qty?: number;
     categoryId?: number;
     enabled?: boolean;
     imageSrc?: string;
 }
 
-const configState = proxy<Interface>({
+const productState = proxy<Interface>({
     categories: [],
     name: '',
     variant1Name: '',
     variant1Price: 0,
     variant1InStock: true,
+    variant1Qty: undefined,
     variant2Name: '',
     variant2Price: 0,
     variant2InStock: true,
+    variant2Qty: undefined,
     enabled: true,
     imageSrc: '',
 });
 
 function resetConfig() {
-    configState.name = '';
-    configState.variant1Name = '';
-    configState.variant1Price = 0;
-    configState.variant1InStock = true;
-    configState.variant2Name = '';
-    configState.variant2Price = 0;
-    configState.variant2InStock = true;
-    configState.categoryId = undefined;
-    configState.enabled = true;
-    configState.imageSrc = '';
+    productState.name = '';
+    productState.variant1Name = '';
+    productState.variant1Price = 0;
+    productState.variant1InStock = true;
+    productState.variant1Qty = undefined;
+    productState.variant2Name = '';
+    productState.variant2Price = 0;
+    productState.variant2InStock = true;
+    productState.variant2Qty = undefined;
+    productState.categoryId = undefined;
+    productState.enabled = true;
+    productState.imageSrc = '';
 }
 
 const Create: NextPage = ({product, pid}: {product?: Product & {image: Image}, pid?: number}) => {
@@ -56,14 +62,16 @@ const Create: NextPage = ({product, pid}: {product?: Product & {image: Image}, p
         variant1Name,
         variant1Price,
         variant1InStock,
+        variant1Qty,
         variant2Name,
         variant2Price,
         variant2InStock,
+        variant2Qty,
         categoryId,
         enabled,
         imageSrc,
         categories,
-    } = useSnapshot(configState);
+    } = useSnapshot(productState);
 
     const [loading, setLoading] = React.useState(false);
     const [success, setSuccess] = React.useState(false);
@@ -87,7 +95,7 @@ const Create: NextPage = ({product, pid}: {product?: Product & {image: Image}, p
         }
 
         // append fields
-        Object.entries(configState).forEach(([key, value]) => {
+        Object.entries(productState).forEach(([key, value]) => {
             const theVal = {value: value};
             if (pid && key === 'imageSrc') {
                 return;
@@ -110,7 +118,7 @@ const Create: NextPage = ({product, pid}: {product?: Product & {image: Image}, p
                 // clear error after 8 seconds
                 setTimeout(() => {
                     setError(undefined);
-                } , 8000);
+                }, 8000);
 
             });
         } else {
@@ -133,7 +141,7 @@ const Create: NextPage = ({product, pid}: {product?: Product & {image: Image}, p
                 // clear error after 8 seconds
                 setTimeout(() => {
                     setError(undefined);
-                } , 8000);
+                }, 8000);
 
             });
         }
@@ -144,7 +152,7 @@ const Create: NextPage = ({product, pid}: {product?: Product & {image: Image}, p
         if (file) {
             const reader = new FileReader();
             reader.onload = () => {
-                configState.imageSrc = reader.result as string;
+                productState.imageSrc = reader.result as string;
             };
             reader.readAsDataURL(file);
         }
@@ -156,7 +164,7 @@ const Create: NextPage = ({product, pid}: {product?: Product & {image: Image}, p
         // init categories
         if (categories.length === 0) {
             Fetcher.get<{categories: Category[];} | null>('admin/category').then(e => {
-                configState.categories = (e?.data?.categories || []);
+                productState.categories = (e?.data?.categories || []);
             }).catch(e => {
                 console.log(e);
             });
@@ -164,21 +172,24 @@ const Create: NextPage = ({product, pid}: {product?: Product & {image: Image}, p
 
         // init product
         if (typeof pid === 'number' && pid > 0) {
-            configState.name = product?.name || '';
-            configState.variant1Name = product?.variant1Name || '';
-            configState.variant1Price = product?.variant1Price || 0;
-            configState.variant1InStock = product?.variant1InStock || true;
-            configState.variant2Name = product?.variant2Name || '';
-            configState.variant2Price = product?.variant2Price || 0;
-            configState.variant2InStock = product?.variant2InStock || true;
-            configState.categoryId = product?.categoryId || undefined;
-            configState.enabled = product?.enabled || true;
+            productState.name = product?.name || '';
+            productState.variant1Name = product?.variant1Name || '';
+            productState.variant1Price = product?.variant1Price || 0;
+            productState.variant1InStock = product?.variant1InStock || true;
+            productState.variant1Qty = product?.variant1Qty === undefined || product?.variant1Qty === null ? undefined : product?.variant1Qty;
+            productState.variant2Name = product?.variant2Name || '';
+            productState.variant2Price = product?.variant2Price || 0;
+            productState.variant2InStock = product?.variant2InStock || true;
+            // productState.variant2Qty = product?.variant2Qty || undefined;
+            productState.variant2Qty = product?.variant2Qty === undefined || product?.variant2Qty === null ? undefined : product?.variant2Qty;
+            productState.categoryId = product?.categoryId || undefined;
+            productState.enabled = product?.enabled || true;
 
             // init image
             if (product?.image) {
                 // random number between 10 to 100
                 const random = Math.floor(Math.random() * (100 - 10 + 1)) + 10;
-                configState.imageSrc = `${apiBase}im/${product.image.id}?${random}`;
+                productState.imageSrc = `${apiBase}im/${product.image.id}?${random}`;
             }
         }
 
@@ -201,7 +212,7 @@ const Create: NextPage = ({product, pid}: {product?: Product & {image: Image}, p
                             <div className={'col-4'}>
                                 <input className={'checkbox'} type="checkbox" name="isEnabled" id="product_enabled"
                                        checked={enabled || false}
-                                       onChange={e => configState.enabled = e.target.checked}/>
+                                       onChange={e => productState.enabled = e.target.checked}/>
                                 <label htmlFor="product_enabled">
                                     {
                                         enabled ? 'Enabled' : 'Disabled'
@@ -221,7 +232,7 @@ const Create: NextPage = ({product, pid}: {product?: Product & {image: Image}, p
                         </div>
                         <div className="col-3">
                             <input placeholder={'product name'} type="text" name="name" id="name" value={name || ''}
-                                   onChange={e => configState.name = e.target.value}/>
+                                   onChange={e => productState.name = e.target.value}/>
                             {
                                 name.length > 14 &&
                                 <span className="text-danger fw-semibold mr-3">
@@ -234,7 +245,7 @@ const Create: NextPage = ({product, pid}: {product?: Product & {image: Image}, p
                             <div className="select-dropdown">
 
                                 <select name="category" id="category" value={categoryId || -1}
-                                        onChange={e => configState.categoryId = Number(e.target.value)}>
+                                        onChange={e => productState.categoryId = Number(e.target.value)}>
                                     {
                                         categoryId === undefined &&
                                         <option value={-1}>Select a Category</option>
@@ -249,17 +260,24 @@ const Create: NextPage = ({product, pid}: {product?: Product & {image: Image}, p
                         </div>
                     </div>
                     <div className={'row'}>
-                        <h3 className={'mt-5'}>Type A</h3>
+                        <h3 className={'mt-5'}>Variant 1</h3>
                         <div className="col-3">
                             <label htmlFor="variant1Name">Name</label>
                             <input type="text" name="Variant 1" id="variant1Name" value={variant1Name || ''}
-                                   onChange={e => configState.variant1Name = e.target.value}/>
+                                   onChange={e => productState.variant1Name = e.target.value}/>
                         </div>
 
                         <div className="col-2">
                             <label htmlFor={'variant1Price'}>Price</label>
                             <input type="number" name="Variant 1" id={'variant1Price'} value={variant1Price || 0}
-                                   onChange={e => configState.variant1Price = Number(e.target.value)}/>
+                                   onChange={e => productState.variant1Price = Number(e.target.value)}/>
+                        </div>
+
+                        <div className={'col-2'}>
+                            <label htmlFor="variant1Qty">Qty</label>
+                            <input type="number" name="Variant 1" id="variant1Qty"
+                                   value={variant1Qty === undefined ? '' : `${variant1Qty}`}
+                                   onChange={e => productState.variant1Qty = Number(e.target.value)}/>
                         </div>
 
                         <div className="col-2 checkbox">
@@ -267,7 +285,7 @@ const Create: NextPage = ({product, pid}: {product?: Product & {image: Image}, p
 
                             <input className={'checkbox'} type="checkbox" name="Variant 1" id="variant1InStock"
                                    checked={variant1InStock || false}
-                                   onChange={e => configState.variant1InStock = e.target.checked}/>
+                                   onChange={e => productState.variant1InStock = e.target.checked}/>
                             {/*<input className={'checkbox'} type="checkbox" name="isEnabled" id="isEnabled" checked={enabled || false}*/}
                             {/*       onChange={e => configState.enabled = e.target.checked}/>*/}
                             <label htmlFor="variant1InStock">
@@ -278,24 +296,31 @@ const Create: NextPage = ({product, pid}: {product?: Product & {image: Image}, p
                         </div>
                     </div>
                     <div className={'row'}>
-                        <h3 className={'mt-5'}>Type B</h3>
+                        <h3 className={'mt-5'}>Variant 2</h3>
                         <div className="col-3">
                             <label htmlFor="variant2Name">Name</label>
                             <input type="text" name="Variant 2" id="variant2Name" value={variant2Name || ''}
-                                   onChange={e => configState.variant2Name = e.target.value}/>
+                                   onChange={e => productState.variant2Name = e.target.value}/>
                         </div>
 
                         <div className="col-2">
                             <label htmlFor={'variant2Price'}>Price</label>
                             <input type="number" name="Variant 2" id={'variant2Price'} value={variant2Price || 0}
-                                   onChange={e => configState.variant2Price = Number(e.target.value)}/>
+                                   onChange={e => productState.variant2Price = Number(e.target.value)}/>
+                        </div>
+
+                        <div className={'col-2'}>
+                            <label htmlFor="variant2Qty">Qty</label>
+                            <input type="number" name="Variant 2" id="variant2Qty"
+                                   value={variant2Qty === undefined ? '' : variant2Qty}
+                                   onChange={e => productState.variant2Qty = Number(e.target.value)}/>
                         </div>
 
                         <div className="col-2 checkbox">
                             <label htmlFor="variant2InStock">Stock</label>
                             <input className={'checkbox'} type="checkbox" name="Variant 2" id="variant2InStock"
                                    checked={variant2InStock || false}
-                                   onChange={e => configState.variant2InStock = e.target.checked}/>
+                                   onChange={e => productState.variant2InStock = e.target.checked}/>
                             <label htmlFor="variant2InStock"/>
                         </div>
                     </div>

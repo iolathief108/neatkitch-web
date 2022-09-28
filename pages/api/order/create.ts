@@ -309,6 +309,12 @@ async function verifyOrderItem(orderItem: any): Promise<true | string> {
     if (!product.enabled) {
         return 'Product is disabled';
     }
+    if (product.variant1Qty && (product.variant1Qty < variant1Qty)) {
+        return `Variant 1 qty is greater than available qty (${product.variant1Qty})`;
+    }
+    if (product.variant2Qty && (product.variant2Qty < variant2Qty)) {
+        return `Variant 2 qty is greater than available qty (${product.variant2Qty})`;
+    }
 
     return true;
 }

@@ -1,3 +1,4 @@
+import "../styles/global/fonts.scss";
 import 'normalize.css/normalize.css';
 import '../styles/bootstrap/bootstrap.scss';
 import '../styles/global/globals.scss';

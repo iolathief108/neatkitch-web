@@ -33,9 +33,11 @@ export default async (req: NextApiRequest & {file: any;}, res: NextApiResponse) 
             variant1InStock,
             variant1Name,
             variant1Price,
+            variant1Qty,
             variant2InStock,
             variant2Name,
             variant2Price,
+            variant2Qty,
             categoryId,
             enabled,
             pid,
@@ -48,6 +50,8 @@ export default async (req: NextApiRequest & {file: any;}, res: NextApiResponse) 
         variant2Price = JSON.parse(variant2Price).value;
         variant1InStock = JSON.parse(variant1InStock).value;
         variant2InStock = JSON.parse(variant2InStock).value;
+        variant1Qty =  JSON.parse(variant1Qty).value;
+        variant2Qty =  JSON.parse(variant2Qty).value;
         enabled = JSON.parse(enabled).value;
         categoryId = JSON.parse(categoryId).value;
         pid = pid ? JSON.parse(pid).value : undefined;
@@ -58,13 +62,15 @@ export default async (req: NextApiRequest & {file: any;}, res: NextApiResponse) 
         }
 
         if (
-            name === undefined ||
-            variant1Name === undefined ||
-            variant2Name === undefined ||
+            !name ||
+            !variant1Name ||
+            !variant2Name ||
             variant1Price === undefined ||
             variant2Price === undefined ||
             variant1InStock === undefined ||
             variant2InStock === undefined ||
+            variant1Qty === undefined ||
+            variant2Qty === undefined ||
             categoryId === undefined ||
             enabled === undefined
         ) {
@@ -99,9 +105,11 @@ export default async (req: NextApiRequest & {file: any;}, res: NextApiResponse) 
                     variant1InStock,
                     variant1Name,
                     variant1Price,
+                    variant1Qty,
                     variant2InStock,
                     variant2Name,
                     variant2Price,
+                    variant2Qty,
                     categoryId,
                     enabled,
                 },
@@ -149,9 +157,11 @@ export default async (req: NextApiRequest & {file: any;}, res: NextApiResponse) 
                     variant1InStock: variant1InStock,
                     variant1Name: variant1Name,
                     variant1Price: variant1Price,
+                    variant1Qty: variant1Qty,
                     variant2InStock: variant2InStock,
                     variant2Name: variant2Name,
                     variant2Price: variant2Price,
+                    variant2Qty: variant2Qty,
                     category: {
                         connect: {
                             id: categoryId,
