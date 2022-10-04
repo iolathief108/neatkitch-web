@@ -67,6 +67,13 @@ function getEnv() {
 export const isDevelopment = getEnv().isDev;
 export const isStaging = getEnv().isStaging;
 
+if (typeof window === 'undefined') {
+    console.log('isDevelopment', isDevelopment);
+    console.log('isStaging', isStaging);
+    console.log('db url', process.env.DATABASE_URL);
+    console.log('zoho user', process.env.ZOHO_USER);
+}
+
 export const devPort = 3000;
 export const isForceSMS = !isDevelopment;
 export const isValidateSMS = !( isDevelopment || isStaging );
