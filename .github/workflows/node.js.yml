@@ -26,4 +26,4 @@ jobs:
     - run: yarn
     - run: yarn generate
     - run: yarn build
-    - run: pm2 restart neatkitch --update-env
+    - run: pm2 restart all --update-env
