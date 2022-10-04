@@ -63,11 +63,11 @@ const frontState = proxy<Interface>({
 });
 
 export function initFrontState(fdata: TFrontDocs) {
-    frontState.categories = fdata.cats;
-    frontState.sliderImageUrls = fdata.sliders.map(s => getImageUrl(s.imageId));
-    frontState.dods = fdata.dods.map(d => ({
+    frontState.categories = fdata?.cats || [];
+    frontState.sliderImageUrls = fdata.sliders?.map(s => getImageUrl(s.imageId)) || [];
+    frontState.dods = fdata?.dods?.map(d => ({
         imageUrl: getImageUrl(d.imageId),
-    }));
+    })) || [];
 }
 
 function initSize() {

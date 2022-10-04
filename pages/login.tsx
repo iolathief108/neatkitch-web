@@ -47,7 +47,9 @@ const Login: NextPage = () => {
                 Router.push('/');
             }
         }).catch(e => {
-            console.log(e);
+            if (typeof window !== 'undefined') {
+                console.log(e);
+            }
         });
         return () => {
             // reset login state

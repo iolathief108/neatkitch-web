@@ -111,7 +111,7 @@ const Create: NextPage = ({product, pid}: {product?: Product & {image: Image}, p
                 // redirect to products page
                 Router.push('/admin/products');
             }).catch(e => {
-                console.log(e);
+                // console.log(e);
                 setError(e?.response?.data?.error ? e.response.data.error : 'Something went wrong');
                 setLoading(false);
 

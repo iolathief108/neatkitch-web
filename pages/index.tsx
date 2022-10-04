@@ -129,10 +129,10 @@ export default Home;
 export async function getStaticProps() {
     const documents = await prisma.document.findMany();
     let r = {
-        docs: documents.map(doc => ({
+        docs: documents?.map(doc => ({
             key: doc.key,
             value: JSON.parse(doc.value).value,
-        })),
+        })) || [],
         cats: await prisma.category.findMany(),
     };
     const dd = await getFrontDocs(r);

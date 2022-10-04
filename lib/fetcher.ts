@@ -94,7 +94,9 @@ export const getProducts = async (query: GetProductsParam): Promise<{products: P
 
         return res.data;
     } catch (e) {
-        console.log(e);
+        if (typeof window !== 'undefined') {
+            console.log(e);
+        }
         return {
             products: [],
             totalPage: 1,
@@ -108,7 +110,8 @@ export const getProduct = async (id: number): Promise<Product | undefined> => {
         const res = await Fetcher.get<Product>(`/product/${id}`);
         return res.data;
     } catch (e) {
-        console.log(e);
+
+        // console.log(e);
         return undefined;
     }
 };
@@ -118,7 +121,7 @@ export const getProfile = async (): Promise<User | undefined> => {
         const res = await Fetcher.get<{user: User}>('/user/profile');
         return res.data.user;
     } catch (e) {
-        console.log(e);
+        // console.log(e);
         return undefined;
     }
 };
@@ -141,7 +144,7 @@ export const getBanners = async (): Promise<{bannerA?: string; bannerB?: string;
         };
 
     } catch (e) {
-        console.log(e);
+        // console.log(e);
         return {};
     }
 };
@@ -173,9 +176,24 @@ export const getFrontDocs = async (ssr?:  {docs: any, cats: any}) => {
             global = window;
         }
 
-        // @ts-ignore
-        let res = (global?.frontDocs as ({data: retType} | undefined)) || await Fetcher.get<retType>('/docs');
+        let res = ssr && typeof window === 'undefined' ?
+            {
+                data: {
+                    docs: ssr.docs,
+                    cats: ssr.cats,
+                }
+            } :
+            // @ts-ignore
+            (global?.frontDocs as ({data: retType} | undefined)) || await Fetcher.get<retType>('/docs');
 
+        if (ssr && typeof window === 'undefined') {
+             res = {
+                data: {
+                    docs: ssr.docs,
+                    cats: ssr.cats,
+                }
+             }
+        }
 
         // @ts-ignore
         global.frontDocs = res?.data ? res : undefined;
@@ -263,7 +281,9 @@ export const getFrontDocs = async (ssr?:  {docs: any, cats: any}) => {
         };
 
     } catch (e) {
-        console.log(e);
+        if (typeof window !== 'undefined') {
+            console.log(e);
+        }
         return {};
     }
 };
@@ -272,7 +292,9 @@ export const getCategories = async (): Promise<catType[]> => {
     try {
         return (await getFrontDocs()).cats || [];
     } catch (e) {
-        console.log(e);
+        if (typeof window !== 'undefined') {
+            console.log(e);
+        }
         return [];
     }
 };
@@ -281,7 +303,9 @@ export const getDod = async (): Promise<{imageId: number, productId: number}[]> 
     try {
         return (await getFrontDocs())?.dods || [];
     } catch (e) {
-        console.log(e);
+        if (typeof window !== 'undefined') {
+            console.log(e);
+        }
         return [];
     }
 };
@@ -290,7 +314,9 @@ export const getSliders = async (): Promise<{imageId: number}[]> => {
     try {
         return (await getFrontDocs())?.sliders || [];
     } catch (e) {
-        console.log(e);
+        if (typeof window !== 'undefined') {
+            console.log(e);
+        }
         return [];
     }
 };
@@ -323,7 +349,9 @@ export const getAdminOrders = async (query: GetAdminOrdersParam): Promise<{order
 
         return res.data;
     } catch (e) {
-        console.log(e);
+        if (typeof window !== 'undefined') {
+            console.log(e);
+        }
         return {
             orders: [],
             totalPage: 1,
@@ -369,7 +397,7 @@ export const getUserOrders = async (query: GetUserOrdersParam): Promise<{orders:
 
         return res.data;
     } catch (e) {
-        console.log(e);
+        // console.log(e);
         return {
             orders: [],
             error: 'Error fetching orders',

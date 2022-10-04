@@ -106,7 +106,7 @@ export const getDeliveryFee = async () => {
             return 0;
         }
     } catch (e) {
-        console.log(e);
+        // console.log(e);
         return 0;
     }
 };
