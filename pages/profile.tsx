@@ -170,6 +170,8 @@ const Profile: NextPage<Props> = () => {
     }
 
     if (!phone) {
+        // redirect to login
+        Router.push('/login');
         return (
             <div>
                 <Header/>

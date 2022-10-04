@@ -6,6 +6,7 @@ import {useEffect, useState} from 'react';
 
 export const Fetcher = axios.create({
     baseURL: isDevelopment ? `http://localhost:${devPort}${apiBase}` : apiBase,
+    // baseURL: apiBase,
     timeout: 80000,
 
 });
