@@ -11,7 +11,7 @@ export const initFront = () => {
 
 };
 
-export let perPage = 5;
+export let perPage = 10;
 
 export const changePerPage = (newPerPage: number) => {
     perPage = newPerPage;
@@ -21,11 +21,14 @@ export let isDevelopment;
 export let isStaging;
 
 
-// if server
+// initialilze the environment
 if (typeof window === 'undefined') {
     isDevelopment = process.env.NODE_ENV === 'development' || process.env.ENV === 'development';
     // @ts-ignore
     isStaging = process.env.ENV === 'staging' || process.env.NODE_ENV === 'staging';
+    if (isStaging) {
+        isDevelopment = false;
+    }
 } else {
     let url = window.location.href;
     if (url.includes('localhost')) {
@@ -44,6 +47,7 @@ if (typeof window === 'undefined') {
         isDevelopment = false;
     } else {
         isStaging = false;
+        isDevelopment = false;
     }
 }
 

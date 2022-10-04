@@ -24,7 +24,7 @@ const Admin: NextPage = (props: any) => {
 
         return () => {
             searchActions.clear();
-            changePerPage(5);
+            // changePerPage(5);
         };
     }, []);
 
