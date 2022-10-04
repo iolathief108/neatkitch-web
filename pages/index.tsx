@@ -25,12 +25,6 @@ import {prisma} from '../prisma';
 
 
 type Props = {
-    // categories: Category[];
-    // sliderImageUrls: string[];
-    // dods: {
-    //     imageUrl: string;
-    //     id?: number;
-    // }[];
     frontDocs: TFrontDocs
 }
 let ssrinit = false;

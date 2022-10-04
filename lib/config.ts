@@ -66,7 +66,6 @@ function getEnv() {
 
 export const isDevelopment = getEnv().isDev;
 export const isStaging = getEnv().isStaging;
-console.log(isDevelopment, isStaging);
 
 export const devPort = 3000;
 export const isForceSMS = !isDevelopment;

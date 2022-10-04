@@ -1,7 +1,10 @@
 import {useSnapshot} from 'valtio';
 import frontState from '../../states/front';
-import Slider, {Settings} from 'react-slick';
+import Slider, {Settings} from '@ant-design/react-slick';
 import {isDevelopment} from '../../lib/config';
+import {useEffect, useState} from 'react';
+import Image from 'next/image';
+import {useHasHydrated} from '../../lib/utils';
 
 
 type ItemProps = {
@@ -29,6 +32,9 @@ const Item = ({url}: ItemProps) => {
                     }, 250);
                 }}
             />
+            {/*<Image src={url} height={getSliderImageHeight()} width={getSliderImageWidth()} objectFit={'cover'} onLoad={() => {*/}
+            {/*    frontState.mainBannerLoaded = true;*/}
+            {/*}}/>*/}
         </div>
     );
 };
@@ -41,6 +47,7 @@ type CarouselProps = {
 export function Carousel(props: CarouselProps) {
 
     const {mainBannerLoaded, noDodLoaded} = useSnapshot(frontState);
+    const hasHydrated = useHasHydrated();
 
     const settings: Settings = {
         dots: false,
@@ -50,8 +57,8 @@ export function Carousel(props: CarouselProps) {
         slidesToScroll: 1,
         autoplay: !isDevelopment,
         autoplaySpeed: 3000,
-        // lazyLoad: 'ondemand',
-        lazyLoad: (mainBannerLoaded && noDodLoaded > 3) ? undefined : 'ondemand',
+        // lazyLoad: 'progressive',
+        lazyLoad: !hasHydrated ? undefined : ((mainBannerLoaded && noDodLoaded > 3) ? undefined : 'ondemand'),
 
         responsive: [
             {
@@ -62,13 +69,22 @@ export function Carousel(props: CarouselProps) {
             },
         ],
     };
+
+    const getUrls = () => {
+        if (hasHydrated) {
+            return props.urls;
+        } else {
+            return [props.urls[0]];
+        }
+    }
+
     return (
         <div style={{
             width: '100%',
         }}>
             <Slider {...settings}>
                 {
-                    props.urls.map((value, index) => <Item key={index} url={value}/>)
+                    getUrls().map((value, index) => <Item key={index} url={value}/>)
                 }
             </Slider>
         </div>
@@ -77,13 +93,50 @@ export function Carousel(props: CarouselProps) {
 
 export function HomeSlider() {
     const {sliderImageUrls} = useSnapshot(frontState);
+    const [ssr, setSsr] = useState(true);
+
+    useEffect(() => {
+        setTimeout(() => {
+            setSsr(false);
+        }, 5000);
+    }, []);
+
     if (sliderImageUrls.length === 0) {
         return null;
     }
 
     return (
         <div className={'home-slider'}>
+            {/*<Carousel urls={ssr ? [sliderImageUrls[0]] : sliderImageUrls}/>*/}
             <Carousel urls={sliderImageUrls}/>
         </div>
     );
+}
+
+function getSliderImageHeight() {
+    if (typeof window === 'undefined') {
+        return 0;
+    }
+    const width = window.innerWidth;
+    if (width < 768) {
+        return 200;
+    }
+    if (width < 992) {
+        return 300;
+    }
+    return 400;
+}
+
+function getSliderImageWidth() {
+    if (typeof window === 'undefined') {
+        return 0;
+    }
+    const width = window.innerWidth;
+    if (width < 768) {
+        return 200;
+    }
+    if (width < 992) {
+        return 300;
+    }
+    return 1200;
 }
