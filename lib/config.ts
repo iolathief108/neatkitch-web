@@ -1,4 +1,3 @@
-import {isSubdomain} from './utils';
 
 
 export const apiBase = '/api/';
@@ -6,6 +5,11 @@ export const apiBase = '/api/';
 export const getImageUrl = (id: number) => {
     return apiBase + 'im/' + id;
 };
+
+export function isSubdomain(url: string) {
+    const regex = new RegExp(/^([a-z]+\:\/{2})?([\w-]+\.[\w-]+\.\w+)$/);
+    return !!url.match(regex);
+}
 
 export const initFront = () => {
 
@@ -17,47 +21,56 @@ export const changePerPage = (newPerPage: number) => {
     perPage = newPerPage;
 };
 
-let isDevelopment1 = false;
-let isStaging1 = false;
+function getEnv() {
+    let isDevelopment1 = false;
+    let isStaging1 = false;
 
+    // initialilze the environment
+    if (typeof window === 'undefined') {
+        if (process.env.ENV === 'development') {
+            isDevelopment1 = true;
+            isStaging1 = false;
+        } else if (process.env.ENV === 'staging') {
+            isDevelopment1 = false;
+            isStaging1 = true;
+        } else {
+            isDevelopment1 = false;
+            isStaging1 = false;
+        }
 
-// initialilze the environment
-if (typeof window === 'undefined') {
-    isDevelopment1 = process.env.NODE_ENV === 'development' || process.env.ENV === 'development';
-    // @ts-ignore
-    isStaging1 = process.env.ENV === 'staging' || process.env.NODE_ENV === 'staging';
-    if (isStaging1) {
-        isDevelopment1 = false;
-    }
-} else {
-    let url = window.location.href;
-    if (url.includes('localhost')) {
-        isDevelopment1 = true;
-    } else if (url.includes('192')) {
-        isDevelopment1 = true;
     } else {
-        isDevelopment1 = false;
+        let url = window.location.href;
+        if (url.includes('localhost')) {
+            isDevelopment1 = true;
+            isStaging1 = false;
+        } else if (url.includes('192')) {
+            isDevelopment1 = true;
+            isStaging1 = false;
+        } else if (url.includes('staging')) {
+            isDevelopment1 = false;
+            isStaging1 = true;
+        } else if (isSubdomain(url)) {
+            isStaging1 = true;
+            isDevelopment1 = false;
+        } else {
+            isStaging1 = false;
+            isDevelopment1 = false;
+        }
     }
 
-    if (url.includes('staging')) {
-        isStaging1 = true;
-        isDevelopment1 = false;
-    } else if (isSubdomain(url)) {
-        isStaging1 = true;
-        isDevelopment1 = false;
-    } else {
-        isStaging1 = false;
-        isDevelopment1 = false;
+    return {
+        isDev: isDevelopment1,
+        isStaging: isStaging1
     }
 }
 
-export const isDevelopment = isDevelopment1 === undefined ? false : isDevelopment1;
-export const isStaging = isStaging1 === undefined ? false : isStaging1;
-
+export const isDevelopment = getEnv().isDev;
+export const isStaging = getEnv().isStaging;
+console.log(isDevelopment, isStaging);
 
 export const devPort = 3000;
 export const isForceSMS = !isDevelopment;
-export const isValidateSMS = isDevelopment || isStaging;
+export const isValidateSMS = !( isDevelopment || isStaging );
 
 export const mobilePrefix = '+65';
 

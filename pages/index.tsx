@@ -5,7 +5,7 @@ import {HomeSlider} from '../comps/slider/hero-slider';
 import {Dod} from '../comps/dod/dod';
 import {useEffect} from 'react';
 import {Category} from '@prisma/client';
-import frontState from '../states/front';
+import frontState, {initFrontState} from '../states/front';
 import {getImageUrl} from '../lib/config';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -20,19 +20,26 @@ import pageState from '../states/page';
 import {Loader} from '../comps/loader';
 import profileState, {profileActions} from '../states/profile';
 import {CartSummery} from '../comps/cartsum/cart-summery';
-import {getDod, getSliders} from '../lib/fetcher';
+import {getDod, getFrontDocs, getSliders, TFrontDocs} from '../lib/fetcher';
+import {prisma} from '../prisma';
 
 
 type Props = {
-    categories: Category[];
-    sliderImageUrls: string[];
-    dods: {
-        imageUrl: string;
-        id?: number;
-    }[];
+    // categories: Category[];
+    // sliderImageUrls: string[];
+    // dods: {
+    //     imageUrl: string;
+    //     id?: number;
+    // }[];
+    frontDocs: TFrontDocs
 }
+let ssrinit = false;
+const Home: NextPage<Props> = (props) => {
 
-const Home: NextPage<Props> = () => {
+    if (!ssrinit) {
+        initFrontState(props.frontDocs);
+        ssrinit = true;
+    }
 
     const {products, totalPage, currentPage, relatedProducts} = useSnapshot(searchState);
     const hasHydrated = useHasHydrated();
@@ -126,86 +133,22 @@ const Home: NextPage<Props> = () => {
 
 export default Home;
 
-// export const getServerSideProps = async () => {
-//     // categories
-//     const categories: Category[] = await prisma.category.findMany();
-//     const documents = await prisma.document.findMany();
-//     const sliderImageUrls: string[] = [];
-//     const dods: {
-//         imageUrl: string;
-//         id?: number
-//     }[] = [];
-//
-//     // loop through all documents
-//     for (let i = 0; i < documents.length; i++) {
-//         const document = documents[i];
-//         if (document.key.includes('slider')) {
-//
-//             // remove slider prefix
-//             const key = document.key.replace('slider', '');
-//
-//             // is key a number?
-//             if (Number.isInteger(Number(key))) {
-//                 // convert key to number
-//                 const numberKey = Number(key);
-//                 let id: number = JSON.parse(document.value)?.value;
-//                 if (id) {
-//                     sliderImageUrls[numberKey] = getImageUrl(id);
-//                 }
-//             }
-//         }
-//
-//         if (document.key.includes('dod')) {
-//             const key = document.key.replace('dod', '');
-//             if (Number.isInteger(Number(key))) {
-//                 const numberKey = Number(key);
-//                 let id: number = JSON.parse(document.value)?.value;
-//                 if (id) {
-//                     // dods[numberKey] = {
-//                     //     imageUrl: getImageUrl(id),
-//                     // }
-//                     dods[numberKey] = {
-//                         ...(dods[numberKey] || {}),
-//                         imageUrl: getImageUrl(id),
-//                     };
-//                 }
-//             }
-//         }
-//         if (document.key.includes('ProductId')) {
-//             let key = document.key.replace('ProductId', '');
-//             key = key.replace('dod', '');
-//             if (Number.isInteger(Number(key))) {
-//                 const numberKey = Number(key);
-//                 let id: number = JSON.parse(document.value)?.value;
-//                 if (id) {
-//                     dods[numberKey] = {
-//                         ...(dods[numberKey] || {}),
-//                         id,
-//                     };
-//                 }
-//             }
-//         }
-//     }
-//
-//     // remove empty elements from sliderImageUrls
-//     for (let i = sliderImageUrls.length - 1; i >= 0; i--) {
-//         if (!sliderImageUrls[i]) {
-//             sliderImageUrls.splice(i, 1);
-//         }
-//     }
-//
-//     // remove empty elements from dods
-//     for (let i = dods.length - 1; i >= 0; i--) {
-//         if (!dods[i] || !dods[i].imageUrl) {
-//             dods.splice(i, 1);
-//         }
-//     }
-//
-//     return {
-//         props: {
-//             categories,
-//             sliderImageUrls,
-//             dods,
-//         },
-//     };
-// };
+export async function getStaticProps() {
+    const documents = await prisma.document.findMany();
+    let r = {
+        docs: documents.map(doc => ({
+            key: doc.key,
+            value: JSON.parse(doc.value).value,
+        })),
+        cats: await prisma.category.findMany(),
+    };
+    const dd = await getFrontDocs(r);
+
+    return {
+        props: {
+            frontDocs: dd,
+        },
+        // 3 days
+        revalidate: 60 * 60 * 24 * 3,
+    };
+}

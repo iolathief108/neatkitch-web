@@ -1,8 +1,8 @@
 import {proxy} from 'valtio';
 import {Product} from '@prisma/client';
 import {getProduct, getProducts} from '../lib/fetcher';
-import {isDevelopment, perPage} from '../lib/config';
-import {devtools} from 'valtio/utils';
+import {perPage} from '../lib/config';
+// import {devtools} from 'valtio/utils';
 import frontState from './front';
 
 
@@ -27,7 +27,8 @@ export const searchState = proxy<Interface>({
     currentPage: 0,
 });
 
-devtools(searchState, {name: 'Search State', enabled: isDevelopment});
+// devtools(searchState, {name: 'Search State', enabled: isDevelopment});
+
 /*** ACTIONS ***/
 export const searchActions = {
     paginate: async (page?: number) => {

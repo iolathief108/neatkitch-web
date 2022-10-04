@@ -2,7 +2,8 @@ import {proxy, subscribe} from 'valtio';
 import {Category} from '@prisma/client';
 import {getContainerWidth, getSearchContainerMargin, getSearchContentSideSpace, getWindowWidth} from '../lib/utils';
 import pageState from './page';
-import {getBanners} from '../lib/fetcher';
+import {getBanners, TFrontDocs} from '../lib/fetcher';
+import {getImageUrl} from '../lib/config';
 
 
 interface Interface {
@@ -60,6 +61,14 @@ const frontState = proxy<Interface>({
 
     headerHeight: 0,
 });
+
+export function initFrontState(fdata: TFrontDocs) {
+    frontState.categories = fdata.cats;
+    frontState.sliderImageUrls = fdata.sliders.map(s => getImageUrl(s.imageId));
+    frontState.dods = fdata.dods.map(d => ({
+        imageUrl: getImageUrl(d.imageId),
+    }));
+}
 
 function initSize() {
 
@@ -133,8 +142,6 @@ async function initBanner() {
             }
         }, 5000);
     }
-
-
 
 
     subscribe(pageState, () =>

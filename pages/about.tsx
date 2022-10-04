@@ -8,12 +8,17 @@ import {useHasHydrated} from '../lib/utils';
 import {Background} from '../comps/background';
 import {Banner} from '../comps/banner';
 import Head from 'next/head';
+import {useEffect} from 'react';
 
 
 const About: NextPage = () => {
     const {bannerA, bannerB, bannerC} = useSnapshot(frontState);
     const hasHydrated = useHasHydrated();
     const {searchContainerMargin, windowWidth} = useSnapshot(frontState);
+
+    useEffect(() => {
+
+    }, []);
 
     return (
         <>

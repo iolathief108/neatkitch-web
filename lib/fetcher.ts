@@ -6,9 +6,7 @@ import {useEffect, useState} from 'react';
 
 export const Fetcher = axios.create({
     baseURL: isDevelopment ? `http://localhost:${devPort}${apiBase}` : apiBase,
-    // baseURL: apiBase,
     timeout: 80000,
-
 });
 
 export const useFetcher = {
@@ -154,9 +152,11 @@ type catType = {
     slug: string,
     imageId: number,
 }
-var global = {}
+var global = {};
 
-export const getFrontDocs = async () => {
+export type TFrontDocs = {cats: catType[], dods: {imageId: number, productId: number}[], shippingCharge: number, sliders: {imageId: number}[]}
+
+export const getFrontDocs = async (ssr?:  {docs: any, cats: any}) => {
 
     type retType = {
         docs: {
@@ -172,8 +172,11 @@ export const getFrontDocs = async () => {
         if (typeof window !== 'undefined') {
             global = window;
         }
+
         // @ts-ignore
-        const res = (global?.frontDocs as ({data: retType} | undefined)) || await Fetcher.get<retType>('/docs');
+        let res = (global?.frontDocs as ({data: retType} | undefined)) || await Fetcher.get<retType>('/docs');
+
+
         // @ts-ignore
         global.frontDocs = res?.data ? res : undefined;
 
@@ -290,7 +293,7 @@ export const getSliders = async (): Promise<{imageId: number}[]> => {
         console.log(e);
         return [];
     }
-}
+};
 
 // Admin Orders
 type fd = Order & {items: (OrderItem & {product: {imageId: number} | null})[]}

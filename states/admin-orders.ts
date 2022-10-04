@@ -1,8 +1,5 @@
 import {proxy} from 'valtio';
-import {Order, OrderItem} from '@prisma/client';
 import {getAdminOrders, ResOrder, updateAdminOrderStatus} from '../lib/fetcher';
-
-
 
 
 interface Interface {

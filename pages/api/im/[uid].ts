@@ -1,6 +1,12 @@
 import {NextApiRequest, NextApiResponse} from 'next';
 import {prisma} from '../../../prisma';
 
+export const config = {
+    api: {
+        externalResolver: true,
+    },
+}
+
 // returns the image with the given id
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     const {uid} = req.query;
@@ -39,7 +45,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             // send image
             res.setHeader('Content-Type', 'image/jpeg');
             res.setHeader('Content-Length', buffer.length);
+            // res.status(200).send(buffer);
             res.end(buffer);
+            return;
         }
     }
 

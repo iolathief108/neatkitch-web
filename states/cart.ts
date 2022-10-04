@@ -1,9 +1,6 @@
-// cart state
-
 import {Product} from '@prisma/client';
 import {proxy, subscribe} from 'valtio';
-import {derive, devtools} from 'valtio/utils';
-import {isDevelopment} from '../lib/config';
+import {derive} from 'valtio/utils';
 import {Storage} from '../storage';
 import {getProduct} from '../lib/fetcher';
 import {numberToMoney} from '../lib/utils';
@@ -35,8 +32,8 @@ export const cartCalc = derive({
     },
 });
 
-devtools(cartState, {name: 'Cart State', enabled: isDevelopment});
-devtools(cartCalc, {name: 'Cart Calc', enabled: isDevelopment});
+// devtools(cartState, {name: 'Cart State', enabled: isDevelopment});
+// devtools(cartCalc, {name: 'Cart Calc', enabled: isDevelopment});
 
 export const getCartTotal = (cart: CartItem[]) => {
     const cartA = cart;

@@ -83,11 +83,6 @@ export function getUrl(param?: {categorySlug?: string | string[], keywords?: str
     return '/search';
 }
 
-export function isSubdomain(url: string) {
-    const regex = new RegExp(/^([a-z]+\:\/{2})?([\w-]+\.[\w-]+\.\w+)$/);
-    return !!url.match(regex);
-}
-
 export function useHasHydrated(beforePaint = true) {
     const [hasHydrated, setHasHydrated] = useState(false);
 

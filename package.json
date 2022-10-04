@@ -11,6 +11,7 @@
     "studio": "prisma studio"
   },
   "dependencies": {
+    "@ant-design/react-slick": "^0.29.2",
     "@fortawesome/fontawesome-free": "^6.1.2",
     "@prisma/client": "^4.2.1",
     "@types/connect-redis": "^0.0.18",
