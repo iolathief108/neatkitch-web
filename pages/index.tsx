@@ -84,7 +84,6 @@ const Home: NextPage<Props> = (props) => {
             <Container className="container home-container">
                 <Cats/>
                 <HomeSlider/>
-
                 <Dod/>
                 <div className={'mt-5'}
                      style={{
