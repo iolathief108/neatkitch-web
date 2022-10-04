@@ -39,3 +39,4 @@
 
 
 console.log('zoho user', process.env.ZOHO_USER);
+console.log('all', process.env);
