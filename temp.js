@@ -1,7 +1,7 @@
-const PrismaClient = require('@prisma/client').PrismaClient;
+// const PrismaClient = require('@prisma/client').PrismaClient;
 
 // @ts-ignore
-let prisma = new PrismaClient();
+// let prisma = new PrismaClient();
 
 // prisma.order.findMany({}).then(orders => {
 //     console.log(orders);
@@ -35,3 +35,6 @@ let prisma = new PrismaClient();
 // });
 
 // console.log(orders);
+
+
+console.log('zoho user', process.env.ZOHO_USER);

@@ -8,7 +8,8 @@
     "start": "next start",
     "migrate": "prisma migrate dev --name init1",
     "generate": "prisma generate",
-    "studio": "prisma studio"
+    "studio": "prisma studio",
+    "bla": "node ./temp.js"
   },
   "dependencies": {
     "@ant-design/react-slick": "^0.29.2",
