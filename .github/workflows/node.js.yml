@@ -24,6 +24,8 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
 #        cache: 'yarn'
+      env: # Or as an environment variable
+        ZOHO_USER: ${{ secrets.ZOHO_USER }}
     - run: yarn bla
 #    - run: yarn
 #    - run: yarn generate
