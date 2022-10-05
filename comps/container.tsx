@@ -25,7 +25,7 @@ export function Container(props: ContainerProps) {
                 setTimeout(() => {
                     new TawkTo(tawkConfig.propertyId, tawkConfig.tawkId);
                     setIsTawkLoaded(true);
-                }, 2000);
+                }, 4000);
             }
             // const tawk = new TawkTo(tawkConfig.propertyId, tawkConfig.tawkId);
             // tawk.hideWidget()

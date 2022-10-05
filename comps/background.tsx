@@ -17,9 +17,9 @@ export function Background(props: Props) {
         return null;
     }
 
-    if (!mainBannerLoaded || noDodLoaded < 3) {
-        return null;
-    }
+    // if (!mainBannerLoaded || noDodLoaded < 3) {
+    //     return null;
+    // }
 
     return (
         <div style={{
