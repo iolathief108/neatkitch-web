@@ -17,13 +17,17 @@ import '@fortawesome/fontawesome-free/css/fontawesome.min.css';
 import '@fortawesome/fontawesome-free/css/brands.min.css';
 import '@fortawesome/fontawesome-free/css/solid.min.css';
 import 'reactjs-popup/dist/index.css';
-
-
-
+import {useEffect} from 'react';
+import {useRouter} from 'next/router';
+import frontState from '../states/front';
 
 
 function MyApp({Component, pageProps}: AppProps) {
     // return <Component {...pageProps} />
+    const router = useRouter();
+    useEffect(() => {
+        frontState.isSidebarActive = false;
+    }, [router.asPath]);
     return (
         <>
             <Component {...pageProps} />

@@ -18,50 +18,49 @@ export function Sidebar() {
                     <Breadcrumb forceClose black/>
                     <div className={'sidebar-content'}>
                         <ul>
-                            <li>
                                 <Link href="/">
+                            <li>
                                     <a>Home</a>
-                                </Link>
                             </li>
-                            <li>
+                                </Link>
                                 <Link href="/about">
+                            <li>
                                     <a>About</a>
-                                </Link>
                             </li>
-                            <li>
+                                </Link>
                                 <Link href="/contact">
-                                    <a>Contact</a>
-                                </Link>
-                            </li>
                             <li>
-                                <Link href="/cart">
-
-                                    <a>Cart</a>
-                                </Link>
+                                    <a>Contact</a>
                             </li>
+                                </Link>
+                                <Link href="/cart">
+                            <li>
+                                    <a>Cart</a>
+                            </li>
+                                </Link>
                             {
                                 !id && hasHydrated && (
-                                    <li>
                                         <Link href="/login">
+                                    <li>
                                             <a>Login</a>
-                                        </Link>
                                     </li>
+                                        </Link>
                                 )
                             }
                             {
                                 id && hasHydrated && (
                                     <>
                                         <h4 className={'ms-2 mt-5 mb-2'}>{firstName} {lastName}</h4>
-                                        <li className={''}>
                                             <Link href="/profile">
+                                        <li className={''}>
                                                 <a>Profile</a>
-                                            </Link>
                                         </li>
-                                        <li>
+                                            </Link>
                                             <Link href="/orders">
+                                        <li>
                                                 <a>Orders</a>
-                                            </Link>
                                         </li>
+                                            </Link>
                                     </>
                                 )
                             }

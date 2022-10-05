@@ -49,7 +49,7 @@ export function Carousel(props: CarouselProps) {
         speed: 700,
         slidesToShow: 1,
         slidesToScroll: 1,
-        autoplay: !isDevelopment,
+        autoplay: hasHydrated && mainBannerLoaded && noDodLoaded > 3 ? !isDevelopment : false,
         autoplaySpeed: 3000,
         lazyLoad: !hasHydrated ? undefined : ((mainBannerLoaded && noDodLoaded > 3) ? undefined : 'ondemand'),
         responsive: [
@@ -68,7 +68,7 @@ export function Carousel(props: CarouselProps) {
         } else {
             return [props.urls[0]];
         }
-    }
+    };
 
     return (
         <div style={{
@@ -92,7 +92,6 @@ export function HomeSlider() {
 
     return (
         <div className={'home-slider'}>
-            {/*<Carousel urls={ssr ? [sliderImageUrls[0]] : sliderImageUrls}/>*/}
             <Carousel urls={sliderImageUrls}/>
         </div>
     );

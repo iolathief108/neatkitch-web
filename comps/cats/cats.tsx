@@ -29,9 +29,9 @@ function CategoryItem({
         }
         return (
             <>
-                <Image height={150} width={150} src={getImageUrl(category.imageId)} alt={category.name} className={'image'}/>
-                {/*<img height={150} width={150} src={getImageUrl(category.imageId)} alt={category.name}*/}
-                {/*     className={'image'}/>*/}
+                {/*<Image height={150} width={150} src={getImageUrl(category.imageId)} alt={category.name} className={'image'}/>*/}
+                <img height={150} width={150} src={getImageUrl(category.imageId)} alt={category.name}
+                     className={'image'}/>
                 <div className={'name'}>{category.name}</div>
             </>
         );
