@@ -12,7 +12,7 @@ jobs:
     runs-on: self-hosted
     env:
       Greeting: Hello
-      ZOHO_SHIT: ${{ secrets.ZOHO_USER }}
+      ZOHO_USER: ${{ secrets.ZOHO_USER }}
 
     strategy:
       matrix:
@@ -24,6 +24,4 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
-      env: 
-        ZOHO_USER: ${{ secrets.ZOHO_USER }}
     - run: yarn bla
