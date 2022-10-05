@@ -114,7 +114,6 @@ export const searchActions = {
 
         // experimental
 
-        searchState.pageLoading = false;
         if (!products.error) {
 
             searchState.search = {
@@ -143,6 +142,7 @@ export const searchActions = {
             searchState.products = [];
             searchState.totalPage = 1;
         }
+        searchState.pageLoading = false;
 
 
         // experimental
