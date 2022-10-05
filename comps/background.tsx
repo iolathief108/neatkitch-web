@@ -13,13 +13,13 @@ export function Background(props: Props) {
     const {isBgVisible, bgWidth, searchContainerMargin, mainBannerLoaded, noDodLoaded} = useSnapshot(frontState);
     const hasHydrated = useHasHydrated();
 
-    if (!isBgVisible || !hasHydrated) {
-        return null;
-    }
-
-    if (!mainBannerLoaded || noDodLoaded < 3) {
-        return null;
-    }
+    // if (!isBgVisible || !hasHydrated) {
+    //     return null;
+    // }
+    //
+    // if (!mainBannerLoaded || noDodLoaded < 3) {
+    //     return null;
+    // }
 
     return (
         <div style={{

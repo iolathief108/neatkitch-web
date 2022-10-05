@@ -117,8 +117,8 @@ const Home: NextPage<Props> = (props) => {
                     <div className={'mb-5'}/>
                 </div>
 
-                <Background align={'left'} bg={'/static/images/left-bg4.png'}/>
-                <Background align={'right'} bg={'/static/images/right-bg3.png'}/>
+                <Background align={'left'} bg={'/static/images/home-bg/left-bg4.png'}/>
+                <Background align={'right'} bg={'/static/images/home-bg/right-bg3.png'}/>
             </Container>
         </>
     );
