@@ -13,7 +13,7 @@ export function Dod() {
 
     return (
         <div className={'home-dod pb-4 px-4'}>
-            <h2 className={'pt-4 pb-2 fw-bold'}>Deals of the days!</h2>
+            <h2 className={'pt-4 pb-2 fw-bold'}>Deals of the day!</h2>
             <div className={'content mt-3 row'}>
                 {
                     dods?.map((dod, index) => {
