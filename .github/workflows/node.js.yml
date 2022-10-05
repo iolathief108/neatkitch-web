@@ -24,7 +24,6 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
 #        cache: 'yarn'
-    - run: /home/damn.sh
     - run: yarn bla
 #    - run: yarn
 #    - run: yarn generate
