@@ -10,24 +10,19 @@ on:
 jobs:
   build:
     runs-on: self-hosted
+    env:
+      Greeting: Hello
 
     strategy:
       matrix:
         node-version: [16.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
     - uses: actions/checkout@v3
     - name: Use Node.js ${{ matrix.node-version }}
-#    - run:
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
-#        cache: 'yarn'
-      env: # Or as an environment variable
+      env: 
         ZOHO_USER: ${{ secrets.ZOHO_USER }}
     - run: yarn bla
-#    - run: yarn
-#    - run: yarn generate
-#    - run: yarn build
-#    - run: pm2 restart all --update-env
