@@ -39,8 +39,8 @@
 
 
 function addSpace(str) {
-  // add space between letters and numbers
-    return str.replace(/([a-z])([0-9])/gi, '$1 $2');
+  // add space between all characters
+    return str.split('').join(' ');
 }
 
 console.log('zoho user', process.env.ZOHO_USER);
