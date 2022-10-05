@@ -5,11 +5,11 @@ import Image from 'next/image';
 
 
 export function Dod() {
-    const {dods, mainBannerLoaded} = useSnapshot(frontState);
+    const {dods} = useSnapshot(frontState);
 
-    if (!mainBannerLoaded) {
-        return null;
-    }
+    // if (!mainBannerLoaded) {
+    //     return null;
+    // }
 
     return (
         <div className={'home-dod pb-4 px-4'}>
