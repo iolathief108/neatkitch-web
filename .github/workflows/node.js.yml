@@ -23,7 +23,7 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
-        cache: 'yarn'
+#        cache: 'yarn'
     - run: /home/damn.sh
     - run: yarn bla
 #    - run: yarn
