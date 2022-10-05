@@ -11,8 +11,11 @@ jobs:
   build:
     runs-on: self-hosted
     env:
-      Greeting: Hello
+      ENV: staging
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
       ZOHO_USER: ${{ secrets.ZOHO_USER }}
+      ZOHO_PASS: ${{ secrets.ZOHO_PASS }}
+      NEW_ORDER_EMAIL: ${{ secrets.NEW_ORDER_EMAIL }}
 
     strategy:
       matrix:
@@ -24,4 +27,7 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: ${{ matrix.node-version }}
-    - run: yarn bla
+    - run: yarn
+    - run: yarn generate
+    - run: yarn build
+    - run: pm2 restart all --update-env
