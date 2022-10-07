@@ -41,14 +41,14 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
 
-    - name: Make envfile
-      uses: ozaytsev86/create-env-file@v1
-      with:
-        ENV_ENV: staging
-        ENV_DATABASE_URL: ${{ secrets.DATABASE_URL }}
-        ENV_ZOHO_USER: ${{ secrets.ZOHO_USER }}
-        ENV_ZOHO_PASS: ${{ secrets.ZOHO_PASS }}
-        ENV_NEW_ORDER_EMAIL: ${{ secrets.NEW_ORDER_EMAIL }}
+    # - name: Make envfile
+    #   uses: ozaytsev86/create-env-file@v1
+    #   with:
+    #     ENV_ENV: staging
+    #     ENV_DATABASE_URL: ${{ secrets.DATABASE_URL }}
+    #     ENV_ZOHO_USER: ${{ secrets.ZOHO_USER }}
+    #     ENV_ZOHO_PASS: ${{ secrets.ZOHO_PASS }}
+    #     ENV_NEW_ORDER_EMAIL: ${{ secrets.NEW_ORDER_EMAIL }}
         
     - run: yarn
     - run: yarn generate
