@@ -75,7 +75,7 @@ if (typeof window === 'undefined') {
 }
 
 export const devPort = 3000;
-export const isForceSMS = !isDevelopment;
+export const isForceSMS = !(isDevelopment || isStaging);
 export const isValidateSMS = !( isDevelopment || isStaging );
 
 export const mobilePrefix = '+65';
