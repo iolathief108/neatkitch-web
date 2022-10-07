@@ -42,13 +42,13 @@ jobs:
           ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
 
     - name: Make envfile
-      uses: SpicyPizza/create-envfile@v1.3
+      uses: ozaytsev86/create-env-file@v1
       with:
-        envkey_ENV: staging
-        envkey_DATABASE_URL: ${{ secrets.DATABASE_URL }}
-        envkey_ZOHO_USER: ${{ secrets.ZOHO_USER }}
-        envkey_ZOHO_PASS: ${{ secrets.ZOHO_PASS }}
-        envkey_NEW_ORDER_EMAIL: ${{ secrets.NEW_ORDER_EMAIL }}
+        ENV_ENV: staging
+        ENV_DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        ENV_ZOHO_USER: ${{ secrets.ZOHO_USER }}
+        ENV_ZOHO_PASS: ${{ secrets.ZOHO_PASS }}
+        ENV_NEW_ORDER_EMAIL: ${{ secrets.NEW_ORDER_EMAIL }}
         
     - run: yarn
     - run: yarn generate
