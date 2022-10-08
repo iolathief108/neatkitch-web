@@ -3,7 +3,6 @@
   margin-top : 10px;
 
   .slick-slider > button {
-    display                : block;
     height                 : 80px;
     width                  : 70px;
     background-color       : white;
@@ -22,7 +21,7 @@
 
     &::before {
       color       : black;
-      font-family : "Font Awesome 6 Free";
+      font-family : "Font Awesome 6 Free", serif;
       font-weight : 900;
       font-size   : 40px;
     }
@@ -82,10 +81,10 @@
 
 
 .home-slider {
-  .slick-track {
-    min-height:  420px;
-    @media (max-width : 775px) {
-      min-height:  150px;
-    }
-  }
+  // .slick-track {
+  //   min-height:  420px;
+  //   @media (max-width : 775px) {
+  //     min-height:  150px;
+  //   }
+  // }
 }

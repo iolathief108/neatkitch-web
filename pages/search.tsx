@@ -1,11 +1,10 @@
-import type {NextPage, NextPageContext} from 'next';
+import type {NextPage} from 'next';
 import {Header} from '../comps/header/header';
 import {Cats} from '../comps/cats/cats';
 import {useEffect} from 'react';
 import {searchActions, searchState} from '../states/search';
 import {useSnapshot} from 'valtio';
 import {Category} from '@prisma/client';
-import {prisma} from '../prisma';
 import frontState from '../states/front';
 import {useRouter} from 'next/router';
 import {getQuery, useHasHydrated} from '../lib/utils';
@@ -25,7 +24,7 @@ type Props = {
 const Search: NextPage<Props> = () => {
 
     const {products, totalPage, currentPage, relatedProducts, pageLoading} = useSnapshot(searchState);
-    const {searchContainerMargin, mainBannerLoaded, noDodLoaded} = useSnapshot(frontState);
+    const {searchContainerMargin} = useSnapshot(frontState);
     const {bannerA, bannerB, bannerC} = useSnapshot(frontState);
     const router = useRouter();
     const {cat, key} = router.query as {cat: string, key: string};
@@ -73,11 +72,11 @@ const Search: NextPage<Props> = () => {
                 </title>
             </Head>
             <Container className="container search pb-4">
+                <Cats/>
                 <div style={{
                     marginLeft: hasHydrated ? searchContainerMargin : 0,
                     marginRight: hasHydrated ? searchContainerMargin : 0,
                 }}>
-                    <Cats/>
                     <CartSummery/>
                     <div className={'mt-4'}>
                         {
@@ -91,7 +90,7 @@ const Search: NextPage<Props> = () => {
                                 loader={<Loader key={0} color={'#B60C0C'}/>}
                             >
                                 {
-                                    products.map((product, index) => (
+                                    products.map((product) => (
                                         <ProductCard key={product.id} product={product}/>
                                     ))
                                 }
