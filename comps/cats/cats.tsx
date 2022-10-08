@@ -62,8 +62,8 @@ export function Cats() {
 
     return (
         <div className={'cats-outer'} style={{
-            marginLeft: '-.75rem',
-            marginRight: '-.75rem'
+            // marginLeft: '-.75rem',
+            // marginRight: '-.75rem'
         }}>
             <div className={'wrap'} style={{
                 width: getTotalWidth(),
