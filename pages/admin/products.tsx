@@ -216,7 +216,7 @@ const SearchBox = () => {
                 {
                     categories.map(category => (
                         <a key={category.id} className={'btn btn-primary me-3'
-                        + (search.categorySlug === category.slug ? ' text-danger' : '')
+                        + (search.categorySlug === category.slug ? ' text-danger text-decoration-underline' : '')
                         } onClick={() => {
                             onCategoryChange(category.slug);
                         }}>{category.name}</a>
