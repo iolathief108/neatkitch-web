@@ -1,5 +1,6 @@
 import type {NextApiRequest, NextApiResponse} from 'next';
 import {getSession} from '../../../lib/session';
+import {isProduction} from '../../../lib/config';
 
 
 export default async function handler(
@@ -27,9 +28,11 @@ export default async function handler(
         }
 
         //check if password is correct
-        if (password !== 'tchureamicen') {
-            res.status(400).json({error: 'password is incorrect'});
-            return;
+        if (isProduction) {
+            if (password !== 'tchureamicen') {
+                res.status(400).json({error: 'password is incorrect'});
+                return;
+            }
         }
 
         //create session

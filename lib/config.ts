@@ -7,13 +7,9 @@ export const getImageUrl = (id: number) => {
 };
 
 export function isSubdomain(url: string) {
-    const regex = new RegExp(/^([a-z]+\:\/{2})?([\w-]+\.[\w-]+\.\w+)$/);
+    const regex = new RegExp(/^([a-z]+:\/{2})?([\w-]+\.[\w-]+\.\w+)$/);
     return !!url.match(regex);
 }
-
-export const initFront = () => {
-
-};
 
 export let perPage = 10;
 
@@ -22,8 +18,8 @@ export const changePerPage = (newPerPage: number) => {
 };
 
 function getEnv() {
-    let isDevelopment1 = false;
-    let isStaging1 = false;
+    let isDevelopment1: boolean;
+    let isStaging1: boolean;
 
     // initialilze the environment
     if (typeof window === 'undefined') {
@@ -66,6 +62,7 @@ function getEnv() {
 
 export const isDevelopment = getEnv().isDev;
 export const isStaging = getEnv().isStaging;
+export const isProduction = !isDevelopment && !isStaging;
 
 if (typeof window === 'undefined') {
     console.log('isDevelopment', isDevelopment);
