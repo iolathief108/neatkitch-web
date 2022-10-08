@@ -11,8 +11,15 @@
   }
 }
 
+.dod-set-cont, .slider-set-cont, .banner-set-cont {
+  label, img {
+    width: 100%;
+    position: relative;
+    cursor: pointer;
+  }
+}
 .dod-set-cont {
-  .img-label + div {
+  .img-label + label {
     &:hover {
       z-index : 2000;
 
@@ -29,7 +36,8 @@
 }
 
 .slider-set-cont, .banner-set-cont {
-  .img-label + div {
+  .img-label + label {
+
     &:hover {
       z-index : 2000;
 
@@ -44,7 +52,7 @@
   }
 }
 .slider-set-cont {
-  .img-label + div {
+  .img-label + label {
     &:hover {
       img, img:hover {
         transform  : scale(1.7);

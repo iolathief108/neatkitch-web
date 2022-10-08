@@ -114,12 +114,14 @@ const Settings: NextPage<{urls: {[key: string]: string}} & Props> = (props) => {
     }, []);
 
     const onSelectImage = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.name) {
+
+        const id = e.currentTarget.id;
+        if (id) {
             const file = e.target.files?.[0];
             if (file) {
                 const reader = new FileReader();
                 reader.onload = () => {
-                    switch (e.target.name) {
+                    switch (id) {
                         case 'dod1':
                             setDod1Url(reader.result as string);
                             break;
@@ -350,9 +352,9 @@ export const getServerSideProps = async () => {
 
 const Image = ({imageUrl}: {imageUrl: string}) => {
     return (
-        <div className="position-relative">
+        // <div className="position-relative">
             <img src={imageUrl} alt=""/>
-        </div>
+        // </div>
     );
 };
 
@@ -399,7 +401,6 @@ const ImageCol = React.forwardRef((
 
     return (
         <ImageColContainer>
-
             {
                 props.text !== undefined &&
                 <div className="form-group mb-3">
@@ -414,9 +415,11 @@ const ImageCol = React.forwardRef((
                 <input type="file" id={props.name} name={props.label} ref={ref} onChange={props.onChange}
                        accept="image/jpeg, image/png" className={'mb-2'}/>
             </label>
-            {
-                props.imageUrl && <Image imageUrl={props.imageUrl}/>
-            }
+            <label htmlFor={props.name}>
+                {
+                    props.imageUrl && <Image imageUrl={props.imageUrl}/>
+                }
+            </label>
         </ImageColContainer>
     );
 });
