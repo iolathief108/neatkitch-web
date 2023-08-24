@@ -23,7 +23,6 @@ const About: NextPage = () => {
     return (
         <>
             <Header/>
-
             <Head>
                 <title>
                     About Us - NeatKitch

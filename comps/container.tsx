@@ -17,7 +17,6 @@ export function Container(props: ContainerProps) {
     const {headerHeight, mainBannerLoaded, noDodLoaded} = useSnapshot(frontState);
     const [isTawkLoaded, setIsTawkLoaded] = React.useState(false);
 
-    // if not server side
     useEffect(() => {
         if (typeof window !== 'undefined') {
 

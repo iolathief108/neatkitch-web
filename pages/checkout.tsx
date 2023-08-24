@@ -74,9 +74,11 @@ type Ret = {
         method: 'POST' | 'GET'
     }
 }
+
 type CheckoutPageProps = {
     categories: Category[];
 }
+
 const CheckoutPage: NextPage<CheckoutPageProps> = () => {
     const {cart} = useSnapshot(cartState);
     const [shippingCharge, setShippingCharge] = useState(0);
@@ -112,7 +114,6 @@ const CheckoutPage: NextPage<CheckoutPageProps> = () => {
         return () => {
             pageState.isCheckoutPage = false;
         };
-
     }, []);
 
     const isEmpty = (cart || []).length === 0;
@@ -173,7 +174,6 @@ const CheckoutPage: NextPage<CheckoutPageProps> = () => {
             form.submit();
             // form
         }
-
     }, [formRef, createOrderResponse]);
 
 
@@ -193,7 +193,6 @@ const CheckoutPage: NextPage<CheckoutPageProps> = () => {
                 }
             </div>
         );
-
     };
 
     return (
@@ -214,6 +213,7 @@ const CheckoutPage: NextPage<CheckoutPageProps> = () => {
                     <div className={'mt-4'}>
                         <form onSubmit={onPayment}>
                             <div className={'row'}>
+
                                 {/* Left */}
                                 <div className="col-md-6">
                                     <div className="form-group">
@@ -290,7 +290,6 @@ const CheckoutPage: NextPage<CheckoutPageProps> = () => {
                                         <input type="submit" value="Pay Now" className={'btn btn-primary' +
                                         (hasHydrated && !(cart || []).length ? ' disabled' : '')
                                         }/>
-
                                     </div>
                                 </div>
                             </div>
@@ -326,7 +325,6 @@ const CheckoutPage: NextPage<CheckoutPageProps> = () => {
 };
 
 export default CheckoutPage;
-
 
 const CheckoutCartItem = ({cartItem}: Props) => {
 
